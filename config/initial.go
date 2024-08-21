@@ -12,7 +12,7 @@ import (
 )
 
 func downloadMMDB(path string) (err error) {
-	resp, err := http.Get("https://cdn.jsdelivr.net/gh/eyslce/maxmind-geoip@release/Country.mmdb")
+	resp, err := http.Get("https://cdn.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/Country.mmdb")
 	if err != nil {
 		return
 	}
@@ -28,7 +28,7 @@ func downloadMMDB(path string) (err error) {
 	return err
 }
 
-func initMMDB() error {
+func InitMMDB() error {
 	if _, err := os.Stat(C.Path.MMDB()); os.IsNotExist(err) {
 		log.Infoln("Can't find MMDB, start download")
 		if err := downloadMMDB(C.Path.MMDB()); err != nil {
@@ -71,7 +71,7 @@ func Init(dir string) error {
 	}
 
 	// initial mmdb
-	if err := initMMDB(); err != nil {
+	if err := InitMMDB(); err != nil {
 		return fmt.Errorf("can't initial MMDB: %w", err)
 	}
 	return nil
