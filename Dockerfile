@@ -1,7 +1,5 @@
 FROM --platform=${BUILDPLATFORM} golang:alpine as builder
 
-RUN apk add --no-cache make git ca-certificates tzdata && \
-    wget -O /Country.mmdb https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb
 WORKDIR /workdir
 COPY --from=tonistiigi/xx:golang / /
 ARG TARGETOS TARGETARCH TARGETVARIANT

@@ -12,7 +12,7 @@ require (
 	golang.org/x/net v0.14.0
 )
 
-replace github.com/Dreamacro/clash => ../
+replace github.com/eyslce/clash => ../
 
 require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect
