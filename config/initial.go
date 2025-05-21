@@ -11,6 +11,8 @@ import (
 	"github.com/eyslce/clash/log"
 )
 
+// downloadMMDB 函数从指定的URL下载MMDB文件并保存到给定的路径。
+// 目前硬编码从jsdelivr CDN下载GeoIP2-CN的Country.mmdb文件。
 func downloadMMDB(path string) (err error) {
 	resp, err := http.Get("https://cdn.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/Country.mmdb")
 	if err != nil {
@@ -28,6 +30,9 @@ func downloadMMDB(path string) (err error) {
 	return err
 }
 
+// InitMMDB 函数负责初始化MMDB (GeoIP数据库) 文件。
+// 它会检查MMDB文件是否存在，如果不存在则下载。
+// 还会验证现有的MMDB文件是否有效，如果无效则删除并重新下载。
 func InitMMDB() error {
 	if _, err := os.Stat(C.Path.MMDB()); os.IsNotExist(err) {
 		log.Infoln("Can't find MMDB, start download")
@@ -50,6 +55,12 @@ func InitMMDB() error {
 	return nil
 }
 
+// Init 函数用于准备Clash运行所需的必要文件和目录。
+// 它接收一个表示配置目录路径的字符串参数。
+// 主要工作包括：
+// 1. 创建配置目录 (如果不存在)。
+// 2. 创建一个初始的config.yaml配置文件 (如果不存在)，包含一个默认的mixed-port设置。
+// 3. 初始化MMDB文件 (调用InitMMDB)。
 // Init prepare necessary files
 func Init(dir string) error {
 	// initial homedir

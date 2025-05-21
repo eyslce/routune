@@ -26,6 +26,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// General 结构体定义了Clash的通用配置项。
 // General config
 type General struct {
 	LegacyInbound
@@ -38,6 +39,7 @@ type General struct {
 	RoutingMark    int          `json:"-"`
 }
 
+// Controller 结构体定义了外部控制器相关的配置项。
 // Controller
 type Controller struct {
 	ExternalController string `json:"-"`
@@ -45,6 +47,8 @@ type Controller struct {
 	Secret             string `json:"-"`
 }
 
+// LegacyInbound 结构体定义了旧版的各种入站代理端口配置。
+// 这些端口配置未来可能会被 `Inbounds` 字段取代。
 type LegacyInbound struct {
 	Port        int    `json:"port"`
 	SocksPort   int    `json:"socks-port"`
@@ -55,6 +59,7 @@ type LegacyInbound struct {
 	BindAddress string `json:"bind-address"`
 }
 
+// DNS 结构体定义了Clash的DNS相关配置。
 // DNS config
 type DNS struct {
 	Enable            bool             `yaml:"enable"`
@@ -71,6 +76,7 @@ type DNS struct {
 	SearchDomains     []string
 }
 
+// FallbackFilter 结构体定义了触发备用DNS服务器的条件。
 // FallbackFilter config
 type FallbackFilter struct {
 	GeoIP     bool         `yaml:"geoip"`
@@ -79,17 +85,20 @@ type FallbackFilter struct {
 	Domain    []string     `yaml:"domain"`
 }
 
+// Profile 结构体定义了与用户配置文件持久化相关的设置。
 // Profile config
 type Profile struct {
 	StoreSelected bool `yaml:"store-selected"`
 	StoreFakeIP   bool `yaml:"store-fake-ip"`
 }
 
+// Experimental 结构体定义了一些实验性功能的开关。
 // Experimental config
 type Experimental struct {
 	UDPFallbackMatch bool `yaml:"udp-fallback-match"`
 }
 
+// Config 结构体是Clash配置的顶层容器，包含了所有解析后的配置信息。
 // Config is clash config manager
 type Config struct {
 	General      *General
@@ -105,6 +114,8 @@ type Config struct {
 	Tunnels      []Tunnel
 }
 
+// RawDNS 是从配置文件中直接读取的DNS配置的原始结构。
+// 在解析阶段，它会被转换为DNS结构体。
 type RawDNS struct {
 	Enable            bool              `yaml:"enable"`
 	IPv6              *bool             `yaml:"ipv6"`
@@ -121,6 +132,7 @@ type RawDNS struct {
 	SearchDomains     []string          `yaml:"search-domains"`
 }
 
+// RawFallbackFilter 是从配置文件中直接读取的FallbackFilter的原始结构。
 type RawFallbackFilter struct {
 	GeoIP     bool     `yaml:"geoip"`
 	GeoIPCode string   `yaml:"geoip-code"`
@@ -128,6 +140,7 @@ type RawFallbackFilter struct {
 	Domain    []string `yaml:"domain"`
 }
 
+// tunnel 是Tunnel配置的内部表示，用于YAML反序列化。
 type tunnel struct {
 	Network []string `yaml:"network"`
 	Address string   `yaml:"address"`
@@ -135,22 +148,29 @@ type tunnel struct {
 	Proxy   string   `yaml:"proxy"`
 }
 
+// Tunnel 是本地端口转发配置的公开类型。
+// 它可以从字符串或映射形式的YAML中解析。
 type Tunnel tunnel
 
+// UnmarshalYAML 实现了 yaml.Unmarshaler 接口，允许Tunnel配置支持两种格式：
+// 1. 字符串形式: "network,address,target,proxy" (例如 "tcp/udp,0.0.0.0:80,example.com:80,PROXY_NAME")
+// 2. 映射形式: 如tunnel结构体定义的字段。
 // UnmarshalYAML implements yaml.Unmarshaler
 func (t *Tunnel) UnmarshalYAML(unmarshal func(any) error) error {
 	var tp string
+	// 尝试按字符串格式解析
 	if err := unmarshal(&tp); err != nil {
+		// 如果字符串解析失败，尝试按映射格式解析
 		var inner tunnel
 		if err := unmarshal(&inner); err != nil {
-			return err
+			return err // 两种格式都解析失败
 		}
 
 		*t = Tunnel(inner)
 		return nil
 	}
 
-	// parse udp/tcp,address,target,proxy
+	// 解析逗号分隔的字符串 "network,address,target,proxy"
 	parts := lo.Map(strings.Split(tp, ","), func(s string, _ int) string {
 		return strings.TrimSpace(s)
 	})
@@ -159,7 +179,7 @@ func (t *Tunnel) UnmarshalYAML(unmarshal func(any) error) error {
 	}
 	network := strings.Split(parts[0], "/")
 
-	// validate network
+	// 验证网络类型
 	for _, n := range network {
 		switch n {
 		case "tcp", "udp":
@@ -168,7 +188,7 @@ func (t *Tunnel) UnmarshalYAML(unmarshal func(any) error) error {
 		}
 	}
 
-	// validate address and target
+	// 验证监听地址和目标地址的格式
 	address := parts[1]
 	target := parts[2]
 	for _, addr := range []string{address, target} {
@@ -186,6 +206,9 @@ func (t *Tunnel) UnmarshalYAML(unmarshal func(any) error) error {
 	return nil
 }
 
+// RawConfig 是从YAML配置文件中直接反序列化得到的原始配置结构。
+// 它包含了所有可能的配置项，并带有默认值。
+// 后续会被ParseRawConfig函数处理成更结构化的Config类型。
 type RawConfig struct {
 	Port               int          `yaml:"port"`
 	SocksPort          int          `yaml:"socks-port"`
@@ -216,6 +239,8 @@ type RawConfig struct {
 	Rule          []string                  `yaml:"rules"`
 }
 
+// Parse 函数接收配置文件内容的字节切片，解析并返回一个Config结构体指针。
+// 它首先调用UnmarshalRawConfig将字节反序列化为RawConfig，然后调用ParseRawConfig进行进一步处理。
 // Parse config
 func Parse(buf []byte) (*Config, error) {
 	rawCfg, err := UnmarshalRawConfig(buf)
@@ -226,6 +251,8 @@ func Parse(buf []byte) (*Config, error) {
 	return ParseRawConfig(rawCfg)
 }
 
+// UnmarshalRawConfig 函数将YAML配置文件的字节切片反序列化为RawConfig结构体。
+// 它会为RawConfig中的一些字段设置默认值。
 func UnmarshalRawConfig(buf []byte) (*RawConfig, error) {
 	// config with default value
 	rawCfg := &RawConfig{
@@ -264,6 +291,9 @@ func UnmarshalRawConfig(buf []byte) (*RawConfig, error) {
 	return rawCfg, nil
 }
 
+// ParseRawConfig 函数将RawConfig结构体转换为最终的Config结构体。
+// 这个过程包括解析各个部分的配置，例如General, Proxies, Rules, DNS等，
+// 并进行必要的验证和转换。
 func ParseRawConfig(rawCfg *RawConfig) (*Config, error) {
 	config := &Config{}
 
@@ -306,7 +336,7 @@ func ParseRawConfig(rawCfg *RawConfig) (*Config, error) {
 	config.Users = parseAuthentication(rawCfg.Authentication)
 
 	config.Tunnels = rawCfg.Tunnels
-	// verify tunnels
+	// 验证Tunnel配置中的代理是否存在
 	for _, t := range config.Tunnels {
 		if _, ok := config.Proxies[t.Proxy]; !ok {
 			return nil, fmt.Errorf("tunnel proxy %s not found", t.Proxy)
@@ -316,10 +346,12 @@ func ParseRawConfig(rawCfg *RawConfig) (*Config, error) {
 	return config, nil
 }
 
+// parseGeneral 函数从RawConfig中提取并解析通用配置项，返回一个General结构体。
+// 它还会检查ExternalUI路径的有效性。
 func parseGeneral(cfg *RawConfig) (*General, error) {
 	externalUI := cfg.ExternalUI
 
-	// checkout externalUI exist
+	// 检查 external-ui 路径是否存在
 	if externalUI != "" {
 		externalUI = C.Path.Resolve(externalUI)
 
@@ -351,6 +383,9 @@ func parseGeneral(cfg *RawConfig) (*General, error) {
 	}, nil
 }
 
+// parseProxies 函数从RawConfig中解析代理服务器、代理组和代理提供者的配置。
+// 返回解析后的代理映射、代理提供者映射和任何可能发生的错误。
+// 它会自动添加DIRECT, REJECT, GLOBAL这三个特殊的代理/组。
 func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[string]providerTypes.ProxyProvider, err error) {
 	proxies = make(map[string]C.Proxy)
 	providersMap = make(map[string]providerTypes.ProxyProvider)
@@ -359,11 +394,12 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 	groupsConfig := cfg.ProxyGroup
 	providersConfig := cfg.ProxyProvider
 
+	// 添加内置的DIRECT和REJECT代理
 	proxies["DIRECT"] = adapter.NewProxy(outbound.NewDirect())
 	proxies["REJECT"] = adapter.NewProxy(outbound.NewReject())
 	proxyList = append(proxyList, "DIRECT", "REJECT")
 
-	// parse proxy
+	// 解析单个代理服务器配置
 	for idx, mapping := range proxiesConfig {
 		proxy, err := adapter.ParseProxy(mapping)
 		if err != nil {
@@ -377,6 +413,7 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 		proxyList = append(proxyList, proxy.Name())
 	}
 
+	// 预先记录代理组的名称以保持顺序
 	// keep the original order of ProxyGroups in config file
 	for idx, mapping := range groupsConfig {
 		groupName, existName := mapping["name"].(string)
@@ -386,14 +423,16 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 		proxyList = append(proxyList, groupName)
 	}
 
+	// 检查代理组是否存在循环依赖，并对其进行拓扑排序
 	// check if any loop exists and sort the ProxyGroups
 	if err := proxyGroupsDagSort(groupsConfig); err != nil {
 		return nil, nil, err
 	}
 
+	// 解析并初始化代理提供者
 	// parse and initial providers
 	for name, mapping := range providersConfig {
-		if name == provider.ReservedName {
+		if name == provider.ReservedName { // provider.ReservedName ("default") 是保留名称
 			return nil, nil, fmt.Errorf("can not defined a provider called `%s`", provider.ReservedName)
 		}
 
@@ -405,6 +444,7 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 		providersMap[name] = pd
 	}
 
+	// 初始化非Compatible类型的代理提供者
 	for _, provider := range providersMap {
 		log.Infoln("Start initial provider %s", provider.Name())
 		if err := provider.Initial(); err != nil {
@@ -412,8 +452,10 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 		}
 	}
 
+	// 解析代理组配置
 	// parse proxy group
 	for idx, mapping := range groupsConfig {
+		// 此时 groupsConfig 已经是拓扑排序后的结果
 		group, err := outboundgroup.ParseProxyGroup(mapping, proxies, providersMap)
 		if err != nil {
 			return nil, nil, fmt.Errorf("proxy group[%d]: %w", idx, err)
@@ -427,6 +469,7 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 		proxies[groupName] = adapter.NewProxy(group)
 	}
 
+	// 初始化Compatible类型的代理提供者
 	// initial compatible provider
 	for _, pd := range providersMap {
 		if pd.VehicleType() != providerTypes.Compatible {
@@ -439,6 +482,7 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 		}
 	}
 
+	// 创建一个包含所有代理和代理组的默认(compatible)提供者，用于GLOBAL组
 	ps := []C.Proxy{}
 	for _, v := range proxyList {
 		ps = append(ps, proxies[v])
@@ -447,6 +491,7 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 	pd, _ := provider.NewCompatibleProvider(provider.ReservedName, ps, hc)
 	providersMap[provider.ReservedName] = pd
 
+	// 创建内置的GLOBAL代理组，它是一个Selector，包含上面创建的默认提供者
 	global := outboundgroup.NewSelector(
 		&outboundgroup.GroupCommonOption{
 			Name: "GLOBAL",
@@ -457,12 +502,19 @@ func parseProxies(cfg *RawConfig) (proxies map[string]C.Proxy, providersMap map[
 	return proxies, providersMap, nil
 }
 
+// parseRules 函数从RawConfig中解析规则配置。
+// 规则定义了流量如何根据类型、内容、目标等被路由到不同的代理。
+// 它需要已解析的代理映射(proxies)来验证规则中引用的代理是否存在。
 func parseRules(cfg *RawConfig, proxies map[string]C.Proxy) ([]C.Rule, error) {
 	rules := []C.Rule{}
 	rulesConfig := cfg.Rule
 
 	// parse rules
 	for idx, line := range rulesConfig {
+		// 规则格式为: TYPE,PAYLOAD,TARGET[,PARAMS...]
+		// 例如: DOMAIN-SUFFIX,google.com,PROXY_A
+		//         IP-CIDR,192.168.1.0/24,DIRECT
+		//         FINAL,PROXY_B
 		rule := trimArr(strings.Split(line, ","))
 		var (
 			payload string
@@ -484,6 +536,7 @@ func parseRules(cfg *RawConfig, proxies map[string]C.Proxy) ([]C.Rule, error) {
 			return nil, fmt.Errorf("rules[%d] [%s] error: format invalid", idx, line)
 		}
 
+		// 验证规则中指定的目标代理是否存在
 		if _, ok := proxies[target]; !ok {
 			return nil, fmt.Errorf("rules[%d] [%s] error: proxy [%s] not found", idx, line, target)
 		}
@@ -491,6 +544,7 @@ func parseRules(cfg *RawConfig, proxies map[string]C.Proxy) ([]C.Rule, error) {
 		rule = trimArr(rule)
 		params = trimArr(params)
 
+		// 调用R.ParseRule来实际解析规则字符串为C.Rule对象
 		parsed, parseErr := R.ParseRule(rule[0], payload, target, params)
 		if parseErr != nil {
 			return nil, fmt.Errorf("rules[%d] [%s] error: %s", idx, line, parseErr.Error())
@@ -502,6 +556,9 @@ func parseRules(cfg *RawConfig, proxies map[string]C.Proxy) ([]C.Rule, error) {
 	return rules, nil
 }
 
+// parseHosts 函数从RawConfig中解析自定义Hosts配置。
+// 它返回一个trie.DomainTrie，用于高效的域名查找。
+// 默认会添加 localhost -> 127.0.0.1 的映射。
 func parseHosts(cfg *RawConfig) (*trie.DomainTrie, error) {
 	tree := trie.New()
 
@@ -523,6 +580,8 @@ func parseHosts(cfg *RawConfig) (*trie.DomainTrie, error) {
 	return tree, nil
 }
 
+// hostWithDefaultPort 函数确保主机地址字符串包含端口号。
+// 如果输入的主机字符串没有端口，则添加指定的默认端口。
 func hostWithDefaultPort(host string, defPort string) (string, error) {
 	if !strings.Contains(host, ":") {
 		host += ":"
@@ -540,10 +599,14 @@ func hostWithDefaultPort(host string, defPort string) (string, error) {
 	return net.JoinHostPort(hostname, port), nil
 }
 
+// parseNameServer 函数解析字符串形式的DNS服务器列表，并将其转换为 []dns.NameServer 结构体切片。
+// 支持多种格式，如 "8.8.8.8", "udp://8.8.8.8:53", "tcp://1.1.1.1", "tls://1.1.1.1:853", "https://dns.google/dns-query"。
+// 还支持指定网络接口，例如 "10.0.0.1#en0"。
 func parseNameServer(servers []string) ([]dns.NameServer, error) {
 	nameservers := []dns.NameServer{}
 
 	for idx, server := range servers {
+		// 如果服务器字符串不包含 "://"，则默认为UDP协议，格式如 "8.8.8.8" 或 "8.8.8.8:53"
 		// parse without scheme .e.g 8.8.8.8:53
 		if !strings.Contains(server, "://") {
 			server = "udp://" + server
@@ -553,6 +616,7 @@ func parseNameServer(servers []string) ([]dns.NameServer, error) {
 			return nil, fmt.Errorf("DNS NameServer[%d] format error: %s", idx, err.Error())
 		}
 
+		// 解析特定的网络接口名称，例如 "10.0.0.1#en0" 中的 "en0"
 		// parse with specific interface
 		// .e.g 10.0.0.1#en0
 		interfaceName := u.Fragment
@@ -561,20 +625,20 @@ func parseNameServer(servers []string) ([]dns.NameServer, error) {
 		switch u.Scheme {
 		case "udp":
 			addr, err = hostWithDefaultPort(u.Host, "53")
-			dnsNetType = "" // UDP
+			dnsNetType = ""
 		case "tcp":
 			addr, err = hostWithDefaultPort(u.Host, "53")
-			dnsNetType = "tcp" // TCP
+			dnsNetType = "tcp"
 		case "tls":
 			addr, err = hostWithDefaultPort(u.Host, "853")
-			dnsNetType = "tcp-tls" // DNS over TLS
+			dnsNetType = "tcp-tls"
 		case "https":
 			clearURL := url.URL{Scheme: "https", Host: u.Host, Path: u.Path, User: u.User}
 			addr = clearURL.String()
-			dnsNetType = "https" // DNS over HTTPS
+			dnsNetType = "https"
 		case "dhcp":
 			addr = u.Host
-			dnsNetType = "dhcp" // UDP from DHCP
+			dnsNetType = "dhcp"
 		default:
 			return nil, fmt.Errorf("DNS NameServer[%d] unsupport scheme: %s", idx, u.Scheme)
 		}
@@ -595,6 +659,9 @@ func parseNameServer(servers []string) ([]dns.NameServer, error) {
 	return nameservers, nil
 }
 
+// parseNameServerPolicy 函数解析域名到DNS服务器的策略映射。
+// 输入是 map[string]string，其中key是域名，value是DNS服务器字符串。
+// 返回 map[string]dns.NameServer，其中value是解析后的dns.NameServer结构。
 func parseNameServerPolicy(nsPolicy map[string]string) (map[string]dns.NameServer, error) {
 	policy := map[string]dns.NameServer{}
 
@@ -612,6 +679,8 @@ func parseNameServerPolicy(nsPolicy map[string]string) (map[string]dns.NameServe
 	return policy, nil
 }
 
+// parseFallbackIPCIDR 函数解析字符串形式的IP CIDR列表，并将其转换为 []*net.IPNet 切片。
+// 用于DNS FallbackFilter中的IPCIDR条件。
 func parseFallbackIPCIDR(ips []string) ([]*net.IPNet, error) {
 	ipNets := []*net.IPNet{}
 
@@ -626,6 +695,10 @@ func parseFallbackIPCIDR(ips []string) ([]*net.IPNet, error) {
 	return ipNets, nil
 }
 
+// parseDNS 函数从RawConfig中解析完整的DNS配置。
+// 它处理NameServer, Fallback, FallbackFilter, FakeIPRange, Hosts等设置，
+// 并进行必要的验证和转换，返回一个DNS结构体。
+// 它依赖于已经解析的hosts数据。
 func parseDNS(rawCfg *RawConfig, hosts *trie.DomainTrie) (*DNS, error) {
 	cfg := rawCfg.DNS
 	if cfg.Enable && len(cfg.NameServer) == 0 {
@@ -660,11 +733,12 @@ func parseDNS(rawCfg *RawConfig, hosts *trie.DomainTrie) (*DNS, error) {
 	if dnsCfg.DefaultNameserver, err = parseNameServer(cfg.DefaultNameserver); err != nil {
 		return nil, err
 	}
+	// 验证DefaultNameserver是否都是纯IP地址 (不能是域名，以避免循环依赖)
 	// check default nameserver is pure ip addr
 	for _, ns := range dnsCfg.DefaultNameserver {
 		host, _, err := net.SplitHostPort(ns.Addr)
 		if err != nil || net.ParseIP(host) == nil {
-			return nil, errors.New("default nameserver should be pure IP")
+			return nil, errors.New("default nameserver (non-DoH/DoT) should be pure IP")
 		}
 	}
 
@@ -722,6 +796,8 @@ func parseDNS(rawCfg *RawConfig, hosts *trie.DomainTrie) (*DNS, error) {
 	return dnsCfg, nil
 }
 
+// parseAuthentication 函数解析认证字符串列表，将其转换为 []auth.AuthUser 切片。
+// 每条认证字符串格式为 "username:password"。
 func parseAuthentication(rawRecords []string) []auth.AuthUser {
 	users := []auth.AuthUser{}
 	for _, line := range rawRecords {
