@@ -3,7 +3,7 @@
 </h1>
 
 [![CodeQL](https://github.com/eyslce/clash/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/eyslce/clash/actions/workflows/codeql.yml)
-[![Linter](https://github.com/eyslce/clash/actions/workflows/linter.yml/badge.svg)](https://github.com/eyslce/clash/actions/workflows/linter.yml)
+
 
 Clash 是一款使用 Go 语言编写的基于规则的网络隧道工具（Rule-based network tunnel）。它可以作为你网络网关的核心组件，帮助你灵活地管理和路由网络流量。
 
