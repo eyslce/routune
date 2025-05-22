@@ -1,3 +1,4 @@
+// Package outbound 实现了 Clash 的出站代理适配器
 package outbound
 
 import (
@@ -15,28 +16,32 @@ import (
 	"github.com/eyslce/clash/transport/ssr/protocol"
 )
 
+// ShadowSocksR 实现了 ShadowsocksR 代理适配器
+// 支持多种加密方式、混淆和协议
 type ShadowSocksR struct {
 	*Base
-	cipher   core.Cipher
-	obfs     obfs.Obfs
-	protocol protocol.Protocol
+	cipher   core.Cipher       // Shadowsocks 加密器
+	obfs     obfs.Obfs         // 混淆器
+	protocol protocol.Protocol // 协议
 }
 
+// ShadowSocksROption 包含创建 ShadowsocksR 代理适配器所需的配置选项
 type ShadowSocksROption struct {
 	BasicOption
-	Name          string `proxy:"name"`
-	Server        string `proxy:"server"`
-	Port          int    `proxy:"port"`
-	Password      string `proxy:"password"`
-	Cipher        string `proxy:"cipher"`
-	Obfs          string `proxy:"obfs"`
-	ObfsParam     string `proxy:"obfs-param,omitempty"`
-	Protocol      string `proxy:"protocol"`
-	ProtocolParam string `proxy:"protocol-param,omitempty"`
-	UDP           bool   `proxy:"udp,omitempty"`
+	Name          string `proxy:"name"`                     // 代理名称
+	Server        string `proxy:"server"`                   // 代理服务器地址
+	Port          int    `proxy:"port"`                     // 代理服务器端口
+	Password      string `proxy:"password"`                 // 加密密码
+	Cipher        string `proxy:"cipher"`                   // 加密方式
+	Obfs          string `proxy:"obfs"`                     // 混淆方式
+	ObfsParam     string `proxy:"obfs-param,omitempty"`     // 混淆参数
+	Protocol      string `proxy:"protocol"`                 // 协议
+	ProtocolParam string `proxy:"protocol-param,omitempty"` // 协议参数
+	UDP           bool   `proxy:"udp,omitempty"`            // 是否支持 UDP
 }
 
-// StreamConn implements C.ProxyAdapter
+// StreamConn 实现 C.ProxyAdapter 接口
+// 将普通连接转换为 ShadowsocksR 代理连接
 func (ssr *ShadowSocksR) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error) {
 	c = ssr.obfs.StreamConn(c)
 	c = ssr.cipher.StreamConn(c)
@@ -58,7 +63,8 @@ func (ssr *ShadowSocksR) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn,
 	return c, err
 }
 
-// DialContext implements C.ProxyAdapter
+// DialContext 实现 C.ProxyAdapter 接口
+// 创建一个到代理服务器的连接
 func (ssr *ShadowSocksR) DialContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (_ C.Conn, err error) {
 	c, err := dialer.DialContext(ctx, "tcp", ssr.addr, ssr.Base.DialOptions(opts...)...)
 	if err != nil {
@@ -74,7 +80,8 @@ func (ssr *ShadowSocksR) DialContext(ctx context.Context, metadata *C.Metadata, 
 	return NewConn(c, ssr), err
 }
 
-// ListenPacketContext implements C.ProxyAdapter
+// ListenPacketContext 实现 C.ProxyAdapter 接口
+// 创建一个 UDP 数据包连接
 func (ssr *ShadowSocksR) ListenPacketContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (C.PacketConn, error) {
 	pc, err := dialer.ListenPacket(ctx, "udp", "", ssr.Base.DialOptions(opts...)...)
 	if err != nil {
@@ -92,6 +99,7 @@ func (ssr *ShadowSocksR) ListenPacketContext(ctx context.Context, metadata *C.Me
 	return newPacketConn(&ssPacketConn{PacketConn: pc, rAddr: addr}, ssr), nil
 }
 
+// NewShadowSocksR 创建一个新的 ShadowsocksR 代理适配器
 func NewShadowSocksR(option ShadowSocksROption) (*ShadowSocksR, error) {
 	// SSR protocol compatibility
 	// https://github.com/eyslce/clash/pull/2056

@@ -1,3 +1,4 @@
+// Package outbound 实现了 Clash 的出站代理适配器
 package outbound
 
 import (
@@ -15,28 +16,32 @@ import (
 	"github.com/eyslce/clash/transport/socks5"
 )
 
+// Socks5 实现了 SOCKS5 代理适配器
+// 支持 TCP 和 UDP 代理，可配置认证信息和 TLS
 type Socks5 struct {
 	*Base
-	user           string
-	pass           string
-	tls            bool
-	skipCertVerify bool
-	tlsConfig      *tls.Config
+	user           string      // 代理认证用户名
+	pass           string      // 代理认证密码
+	tls            bool        // 是否启用 TLS
+	skipCertVerify bool        // 是否跳过证书验证
+	tlsConfig      *tls.Config // TLS 配置
 }
 
+// Socks5Option 包含创建 SOCKS5 代理适配器所需的配置选项
 type Socks5Option struct {
 	BasicOption
-	Name           string `proxy:"name"`
-	Server         string `proxy:"server"`
-	Port           int    `proxy:"port"`
-	UserName       string `proxy:"username,omitempty"`
-	Password       string `proxy:"password,omitempty"`
-	TLS            bool   `proxy:"tls,omitempty"`
-	UDP            bool   `proxy:"udp,omitempty"`
-	SkipCertVerify bool   `proxy:"skip-cert-verify,omitempty"`
+	Name           string `proxy:"name"`                       // 代理名称
+	Server         string `proxy:"server"`                     // 代理服务器地址
+	Port           int    `proxy:"port"`                       // 代理服务器端口
+	UserName       string `proxy:"username,omitempty"`         // 认证用户名
+	Password       string `proxy:"password,omitempty"`         // 认证密码
+	TLS            bool   `proxy:"tls,omitempty"`              // 是否启用 TLS
+	UDP            bool   `proxy:"udp,omitempty"`              // 是否支持 UDP
+	SkipCertVerify bool   `proxy:"skip-cert-verify,omitempty"` // 是否跳过证书验证
 }
 
-// StreamConn implements C.ProxyAdapter
+// StreamConn 实现 C.ProxyAdapter 接口
+// 将普通连接转换为 SOCKS5 代理连接
 func (ss *Socks5) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error) {
 	if ss.tls {
 		cc := tls.Client(c, ss.tlsConfig)
@@ -62,7 +67,8 @@ func (ss *Socks5) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error)
 	return c, nil
 }
 
-// DialContext implements C.ProxyAdapter
+// DialContext 实现 C.ProxyAdapter 接口
+// 创建一个到代理服务器的连接
 func (ss *Socks5) DialContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (_ C.Conn, err error) {
 	c, err := dialer.DialContext(ctx, "tcp", ss.addr, ss.Base.DialOptions(opts...)...)
 	if err != nil {
@@ -82,7 +88,8 @@ func (ss *Socks5) DialContext(ctx context.Context, metadata *C.Metadata, opts ..
 	return NewConn(c, ss), nil
 }
 
-// ListenPacketContext implements C.ProxyAdapter
+// ListenPacketContext 实现 C.ProxyAdapter 接口
+// 创建一个 UDP 数据包连接
 func (ss *Socks5) ListenPacketContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (_ C.PacketConn, err error) {
 	c, err := dialer.DialContext(ctx, "tcp", ss.addr, ss.Base.DialOptions(opts...)...)
 	if err != nil {
@@ -148,6 +155,7 @@ func (ss *Socks5) ListenPacketContext(ctx context.Context, metadata *C.Metadata,
 	return newPacketConn(&socksPacketConn{PacketConn: pc, rAddr: bindUDPAddr, tcpConn: c}, ss), nil
 }
 
+// NewSocks5 创建一个新的 SOCKS5 代理适配器
 func NewSocks5(option Socks5Option) *Socks5 {
 	var tlsConfig *tls.Config
 	if option.TLS {
@@ -174,12 +182,15 @@ func NewSocks5(option Socks5Option) *Socks5 {
 	}
 }
 
+// socksPacketConn 是一个 SOCKS5 UDP 数据包连接包装器
 type socksPacketConn struct {
 	net.PacketConn
-	rAddr   net.Addr
-	tcpConn net.Conn
+	rAddr   net.Addr // 远程地址
+	tcpConn net.Conn // 关联的 TCP 连接
 }
 
+// WriteTo 实现 net.PacketConn 接口
+// 将数据包发送到指定地址
 func (uc *socksPacketConn) WriteTo(b []byte, addr net.Addr) (n int, err error) {
 	packet, err := socks5.EncodeUDPPacket(socks5.ParseAddrToSocksAddr(addr), b)
 	if err != nil {
@@ -188,6 +199,8 @@ func (uc *socksPacketConn) WriteTo(b []byte, addr net.Addr) (n int, err error) {
 	return uc.PacketConn.WriteTo(packet, uc.rAddr)
 }
 
+// ReadFrom 实现 net.PacketConn 接口
+// 从连接读取数据包
 func (uc *socksPacketConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	n, _, e := uc.PacketConn.ReadFrom(b)
 	if e != nil {
@@ -208,6 +221,8 @@ func (uc *socksPacketConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	return n - len(addr) - 3, udpAddr, nil
 }
 
+// Close 关闭连接
+// 同时关闭 UDP 和关联的 TCP 连接
 func (uc *socksPacketConn) Close() error {
 	uc.tcpConn.Close()
 	return uc.PacketConn.Close()

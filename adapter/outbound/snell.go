@@ -1,3 +1,4 @@
+// Package outbound 实现了 Clash 的出站代理适配器
 package outbound
 
 import (
@@ -13,32 +14,37 @@ import (
 	"github.com/eyslce/clash/transport/snell"
 )
 
+// Snell 实现了 Snell 代理适配器
+// 支持多种混淆方式和版本
 type Snell struct {
 	*Base
-	psk        []byte
-	pool       *snell.Pool
-	obfsOption *simpleObfsOption
-	version    int
+	psk        []byte            // 预共享密钥
+	pool       *snell.Pool       // 连接池（仅用于 v2 版本）
+	obfsOption *simpleObfsOption // 混淆选项
+	version    int               // Snell 版本
 }
 
+// SnellOption 包含创建 Snell 代理适配器所需的配置选项
 type SnellOption struct {
 	BasicOption
-	Name     string         `proxy:"name"`
-	Server   string         `proxy:"server"`
-	Port     int            `proxy:"port"`
-	Psk      string         `proxy:"psk"`
-	UDP      bool           `proxy:"udp,omitempty"`
-	Version  int            `proxy:"version,omitempty"`
-	ObfsOpts map[string]any `proxy:"obfs-opts,omitempty"`
+	Name     string         `proxy:"name"`                // 代理名称
+	Server   string         `proxy:"server"`              // 代理服务器地址
+	Port     int            `proxy:"port"`                // 代理服务器端口
+	Psk      string         `proxy:"psk"`                 // 预共享密钥
+	UDP      bool           `proxy:"udp,omitempty"`       // 是否支持 UDP
+	Version  int            `proxy:"version,omitempty"`   // Snell 版本
+	ObfsOpts map[string]any `proxy:"obfs-opts,omitempty"` // 混淆选项
 }
 
+// streamOption 包含创建 Snell 流连接所需的选项
 type streamOption struct {
-	psk        []byte
-	version    int
-	addr       string
-	obfsOption *simpleObfsOption
+	psk        []byte            // 预共享密钥
+	version    int               // Snell 版本
+	addr       string            // 服务器地址
+	obfsOption *simpleObfsOption // 混淆选项
 }
 
+// streamConn 创建一个 Snell 流连接
 func streamConn(c net.Conn, option streamOption) *snell.Snell {
 	switch option.obfsOption.Mode {
 	case "tls":
@@ -50,14 +56,16 @@ func streamConn(c net.Conn, option streamOption) *snell.Snell {
 	return snell.StreamConn(c, option.psk, option.version)
 }
 
-// StreamConn implements C.ProxyAdapter
+// StreamConn 实现 C.ProxyAdapter 接口
+// 将普通连接转换为 Snell 代理连接
 func (s *Snell) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error) {
 	c = streamConn(c, streamOption{s.psk, s.version, s.addr, s.obfsOption})
 	err := snell.WriteHeader(c, metadata.String(), uint(metadata.DstPort), s.version)
 	return c, err
 }
 
-// DialContext implements C.ProxyAdapter
+// DialContext 实现 C.ProxyAdapter 接口
+// 创建一个到代理服务器的连接
 func (s *Snell) DialContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (_ C.Conn, err error) {
 	if s.version == snell.Version2 && len(opts) == 0 {
 		c, err := s.pool.Get()
@@ -86,7 +94,8 @@ func (s *Snell) DialContext(ctx context.Context, metadata *C.Metadata, opts ...d
 	return NewConn(c, s), err
 }
 
-// ListenPacketContext implements C.ProxyAdapter
+// ListenPacketContext 实现 C.ProxyAdapter 接口
+// 创建一个 UDP 数据包连接
 func (s *Snell) ListenPacketContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (C.PacketConn, error) {
 	c, err := dialer.DialContext(ctx, "tcp", s.addr, s.Base.DialOptions(opts...)...)
 	if err != nil {
@@ -104,6 +113,7 @@ func (s *Snell) ListenPacketContext(ctx context.Context, metadata *C.Metadata, o
 	return newPacketConn(pc, s), nil
 }
 
+// NewSnell 创建一个新的 Snell 代理适配器
 func NewSnell(option SnellOption) (*Snell, error) {
 	addr := net.JoinHostPort(option.Server, strconv.Itoa(option.Port))
 	psk := []byte(option.Psk)

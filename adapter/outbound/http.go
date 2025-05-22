@@ -1,3 +1,4 @@
+// Package outbound 实现了 Clash 的出站代理适配器
 package outbound
 
 import (
@@ -17,28 +18,32 @@ import (
 	C "github.com/eyslce/clash/constant"
 )
 
+// Http 实现了 HTTP 代理适配器
+// 支持 HTTP 和 HTTPS 代理，可配置认证信息和自定义请求头
 type Http struct {
 	*Base
-	user      string
-	pass      string
-	tlsConfig *tls.Config
-	Headers   http.Header
+	user      string      // 代理认证用户名
+	pass      string      // 代理认证密码
+	tlsConfig *tls.Config // TLS 配置
+	Headers   http.Header // 自定义请求头
 }
 
+// HttpOption 包含创建 HTTP 代理适配器所需的配置选项
 type HttpOption struct {
 	BasicOption
-	Name           string            `proxy:"name"`
-	Server         string            `proxy:"server"`
-	Port           int               `proxy:"port"`
-	UserName       string            `proxy:"username,omitempty"`
-	Password       string            `proxy:"password,omitempty"`
-	TLS            bool              `proxy:"tls,omitempty"`
-	SNI            string            `proxy:"sni,omitempty"`
-	SkipCertVerify bool              `proxy:"skip-cert-verify,omitempty"`
-	Headers        map[string]string `proxy:"headers,omitempty"`
+	Name           string            `proxy:"name"`                       // 代理名称
+	Server         string            `proxy:"server"`                     // 代理服务器地址
+	Port           int               `proxy:"port"`                       // 代理服务器端口
+	UserName       string            `proxy:"username,omitempty"`         // 认证用户名
+	Password       string            `proxy:"password,omitempty"`         // 认证密码
+	TLS            bool              `proxy:"tls,omitempty"`              // 是否启用 TLS
+	SNI            string            `proxy:"sni,omitempty"`              // TLS SNI
+	SkipCertVerify bool              `proxy:"skip-cert-verify,omitempty"` // 是否跳过证书验证
+	Headers        map[string]string `proxy:"headers,omitempty"`          // 自定义请求头
 }
 
-// StreamConn implements C.ProxyAdapter
+// StreamConn 实现 C.ProxyAdapter 接口
+// 将普通连接转换为 HTTP 代理连接
 func (h *Http) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error) {
 	if h.tlsConfig != nil {
 		cc := tls.Client(c, h.tlsConfig)
@@ -57,7 +62,8 @@ func (h *Http) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error) {
 	return c, nil
 }
 
-// DialContext implements C.ProxyAdapter
+// DialContext 实现 C.ProxyAdapter 接口
+// 创建一个到代理服务器的连接
 func (h *Http) DialContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (_ C.Conn, err error) {
 	c, err := dialer.DialContext(ctx, "tcp", h.addr, h.Base.DialOptions(opts...)...)
 	if err != nil {
@@ -77,6 +83,8 @@ func (h *Http) DialContext(ctx context.Context, metadata *C.Metadata, opts ...di
 	return NewConn(c, h), nil
 }
 
+// shakeHand 执行 HTTP CONNECT 握手
+// 发送 CONNECT 请求并处理响应
 func (h *Http) shakeHand(metadata *C.Metadata, rw io.ReadWriter) error {
 	addr := metadata.RemoteAddress()
 	req := &http.Request{
@@ -123,6 +131,7 @@ func (h *Http) shakeHand(metadata *C.Metadata, rw io.ReadWriter) error {
 	return fmt.Errorf("can not connect remote err code: %d", resp.StatusCode)
 }
 
+// NewHttp 创建一个新的 HTTP 代理适配器
 func NewHttp(option HttpOption) *Http {
 	var tlsConfig *tls.Config
 	if option.TLS {

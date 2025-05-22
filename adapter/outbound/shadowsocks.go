@@ -1,3 +1,4 @@
+// Package outbound 实现了 Clash 的出站代理适配器
 package outbound
 
 import (
@@ -16,44 +17,50 @@ import (
 	v2rayObfs "github.com/eyslce/clash/transport/v2ray-plugin"
 )
 
+// ShadowSocks 实现了 Shadowsocks 代理适配器
+// 支持多种加密方式和混淆插件
 type ShadowSocks struct {
 	*Base
-	cipher core.Cipher
+	cipher core.Cipher // Shadowsocks 加密器
 
 	// obfs
-	obfsMode    string
-	obfsOption  *simpleObfsOption
-	v2rayOption *v2rayObfs.Option
+	obfsMode    string            // 混淆模式
+	obfsOption  *simpleObfsOption // simple-obfs 选项
+	v2rayOption *v2rayObfs.Option // v2ray-plugin 选项
 }
 
+// ShadowSocksOption 包含创建 Shadowsocks 代理适配器所需的配置选项
 type ShadowSocksOption struct {
 	BasicOption
-	Name       string         `proxy:"name"`
-	Server     string         `proxy:"server"`
-	Port       int            `proxy:"port"`
-	Password   string         `proxy:"password"`
-	Cipher     string         `proxy:"cipher"`
-	UDP        bool           `proxy:"udp,omitempty"`
-	Plugin     string         `proxy:"plugin,omitempty"`
-	PluginOpts map[string]any `proxy:"plugin-opts,omitempty"`
+	Name       string         `proxy:"name"`                  // 代理名称
+	Server     string         `proxy:"server"`                // 代理服务器地址
+	Port       int            `proxy:"port"`                  // 代理服务器端口
+	Password   string         `proxy:"password"`              // 加密密码
+	Cipher     string         `proxy:"cipher"`                // 加密方式
+	UDP        bool           `proxy:"udp,omitempty"`         // 是否支持 UDP
+	Plugin     string         `proxy:"plugin,omitempty"`      // 混淆插件
+	PluginOpts map[string]any `proxy:"plugin-opts,omitempty"` // 混淆插件选项
 }
 
+// simpleObfsOption 包含 simple-obfs 插件的配置选项
 type simpleObfsOption struct {
-	Mode string `obfs:"mode,omitempty"`
-	Host string `obfs:"host,omitempty"`
+	Mode string `obfs:"mode,omitempty"` // 混淆模式
+	Host string `obfs:"host,omitempty"` // 混淆主机名
 }
 
+// v2rayObfsOption 包含 v2ray-plugin 插件的配置选项
 type v2rayObfsOption struct {
-	Mode           string            `obfs:"mode"`
-	Host           string            `obfs:"host,omitempty"`
-	Path           string            `obfs:"path,omitempty"`
-	TLS            bool              `obfs:"tls,omitempty"`
-	Headers        map[string]string `obfs:"headers,omitempty"`
-	SkipCertVerify bool              `obfs:"skip-cert-verify,omitempty"`
-	Mux            bool              `obfs:"mux,omitempty"`
+	Mode           string            `obfs:"mode"`                       // 混淆模式
+	Host           string            `obfs:"host,omitempty"`             // 混淆主机名
+	Path           string            `obfs:"path,omitempty"`             // WebSocket 路径
+	TLS            bool              `obfs:"tls,omitempty"`              // 是否启用 TLS
+	Headers        map[string]string `obfs:"headers,omitempty"`          // 自定义请求头
+	SkipCertVerify bool              `obfs:"skip-cert-verify,omitempty"` // 是否跳过证书验证
+	Mux            bool              `obfs:"mux,omitempty"`              // 是否启用多路复用
 }
 
-// StreamConn implements C.ProxyAdapter
+// StreamConn 实现 C.ProxyAdapter 接口
+// 将普通连接转换为 Shadowsocks 代理连接
 func (ss *ShadowSocks) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error) {
 	switch ss.obfsMode {
 	case "tls":
@@ -73,7 +80,8 @@ func (ss *ShadowSocks) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, e
 	return c, err
 }
 
-// DialContext implements C.ProxyAdapter
+// DialContext 实现 C.ProxyAdapter 接口
+// 创建一个到代理服务器的连接
 func (ss *ShadowSocks) DialContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (_ C.Conn, err error) {
 	c, err := dialer.DialContext(ctx, "tcp", ss.addr, ss.Base.DialOptions(opts...)...)
 	if err != nil {
@@ -89,7 +97,8 @@ func (ss *ShadowSocks) DialContext(ctx context.Context, metadata *C.Metadata, op
 	return NewConn(c, ss), err
 }
 
-// ListenPacketContext implements C.ProxyAdapter
+// ListenPacketContext 实现 C.ProxyAdapter 接口
+// 创建一个 UDP 数据包连接
 func (ss *ShadowSocks) ListenPacketContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (C.PacketConn, error) {
 	pc, err := dialer.ListenPacket(ctx, "udp", "", ss.Base.DialOptions(opts...)...)
 	if err != nil {
@@ -106,6 +115,7 @@ func (ss *ShadowSocks) ListenPacketContext(ctx context.Context, metadata *C.Meta
 	return newPacketConn(&ssPacketConn{PacketConn: pc, rAddr: addr}, ss), nil
 }
 
+// NewShadowSocks 创建一个新的 Shadowsocks 代理适配器
 func NewShadowSocks(option ShadowSocksOption) (*ShadowSocks, error) {
 	addr := net.JoinHostPort(option.Server, strconv.Itoa(option.Port))
 	cipher := option.Cipher
@@ -171,11 +181,14 @@ func NewShadowSocks(option ShadowSocksOption) (*ShadowSocks, error) {
 	}, nil
 }
 
+// ssPacketConn 是一个 Shadowsocks UDP 数据包连接包装器
 type ssPacketConn struct {
 	net.PacketConn
-	rAddr net.Addr
+	rAddr net.Addr // 远程地址
 }
 
+// WriteTo 实现 net.PacketConn 接口
+// 将数据包发送到指定地址
 func (spc *ssPacketConn) WriteTo(b []byte, addr net.Addr) (n int, err error) {
 	packet, err := socks5.EncodeUDPPacket(socks5.ParseAddrToSocksAddr(addr), b)
 	if err != nil {
@@ -184,6 +197,8 @@ func (spc *ssPacketConn) WriteTo(b []byte, addr net.Addr) (n int, err error) {
 	return spc.PacketConn.WriteTo(packet[3:], spc.rAddr)
 }
 
+// ReadFrom 实现 net.PacketConn 接口
+// 从连接读取数据包
 func (spc *ssPacketConn) ReadFrom(b []byte) (int, net.Addr, error) {
 	n, _, e := spc.PacketConn.ReadFrom(b)
 	if e != nil {

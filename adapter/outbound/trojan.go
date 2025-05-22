@@ -1,3 +1,4 @@
+// Package outbound 实现了 Clash 的出站代理适配器
 package outbound
 
 import (
@@ -16,32 +17,37 @@ import (
 	"golang.org/x/net/http2"
 )
 
+// Trojan 实现了 Trojan 代理适配器
+// 支持 TCP、UDP、WebSocket 和 gRPC 传输
 type Trojan struct {
 	*Base
-	instance *trojan.Trojan
-	option   *TrojanOption
+	instance *trojan.Trojan // Trojan 实例
+	option   *TrojanOption  // 配置选项
 
 	// for gun mux
-	gunTLSConfig *tls.Config
-	gunConfig    *gun.Config
-	transport    *http2.Transport
+	gunTLSConfig *tls.Config      // gRPC TLS 配置
+	gunConfig    *gun.Config      // gRPC 配置
+	transport    *http2.Transport // HTTP/2 传输
 }
 
+// TrojanOption 包含创建 Trojan 代理适配器所需的配置选项
 type TrojanOption struct {
 	BasicOption
-	Name           string      `proxy:"name"`
-	Server         string      `proxy:"server"`
-	Port           int         `proxy:"port"`
-	Password       string      `proxy:"password"`
-	ALPN           []string    `proxy:"alpn,omitempty"`
-	SNI            string      `proxy:"sni,omitempty"`
-	SkipCertVerify bool        `proxy:"skip-cert-verify,omitempty"`
-	UDP            bool        `proxy:"udp,omitempty"`
-	Network        string      `proxy:"network,omitempty"`
-	GrpcOpts       GrpcOptions `proxy:"grpc-opts,omitempty"`
-	WSOpts         WSOptions   `proxy:"ws-opts,omitempty"`
+	Name           string      `proxy:"name"`                       // 代理名称
+	Server         string      `proxy:"server"`                     // 代理服务器地址
+	Port           int         `proxy:"port"`                       // 代理服务器端口
+	Password       string      `proxy:"password"`                   // 密码
+	ALPN           []string    `proxy:"alpn,omitempty"`             // ALPN 协议列表
+	SNI            string      `proxy:"sni,omitempty"`              // TLS SNI
+	SkipCertVerify bool        `proxy:"skip-cert-verify,omitempty"` // 是否跳过证书验证
+	UDP            bool        `proxy:"udp,omitempty"`              // 是否支持 UDP
+	Network        string      `proxy:"network,omitempty"`          // 传输网络类型
+	GrpcOpts       GrpcOptions `proxy:"grpc-opts,omitempty"`        // gRPC 选项
+	WSOpts         WSOptions   `proxy:"ws-opts,omitempty"`          // WebSocket 选项
 }
 
+// plainStream 创建一个普通的 Trojan 流连接
+// 支持 WebSocket 和普通 TCP 连接
 func (t *Trojan) plainStream(c net.Conn) (net.Conn, error) {
 	if t.option.Network == "ws" {
 		host, port, _ := net.SplitHostPort(t.addr)
@@ -69,7 +75,8 @@ func (t *Trojan) plainStream(c net.Conn) (net.Conn, error) {
 	return t.instance.StreamConn(c)
 }
 
-// StreamConn implements C.ProxyAdapter
+// StreamConn 实现 C.ProxyAdapter 接口
+// 将普通连接转换为 Trojan 代理连接
 func (t *Trojan) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error) {
 	var err error
 	if t.transport != nil {
@@ -86,7 +93,8 @@ func (t *Trojan) StreamConn(c net.Conn, metadata *C.Metadata) (net.Conn, error) 
 	return c, err
 }
 
-// DialContext implements C.ProxyAdapter
+// DialContext 实现 C.ProxyAdapter 接口
+// 创建一个到代理服务器的连接
 func (t *Trojan) DialContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (_ C.Conn, err error) {
 	// gun transport
 	if t.transport != nil && len(opts) == 0 {
@@ -121,7 +129,8 @@ func (t *Trojan) DialContext(ctx context.Context, metadata *C.Metadata, opts ...
 	return NewConn(c, t), err
 }
 
-// ListenPacketContext implements C.ProxyAdapter
+// ListenPacketContext 实现 C.ProxyAdapter 接口
+// 创建一个 UDP 数据包连接
 func (t *Trojan) ListenPacketContext(ctx context.Context, metadata *C.Metadata, opts ...dialer.Option) (_ C.PacketConn, err error) {
 	var c net.Conn
 
@@ -158,6 +167,7 @@ func (t *Trojan) ListenPacketContext(ctx context.Context, metadata *C.Metadata, 
 	return newPacketConn(pc, t), err
 }
 
+// NewTrojan 创建一个新的 Trojan 代理适配器
 func NewTrojan(option TrojanOption) (*Trojan, error) {
 	addr := net.JoinHostPort(option.Server, strconv.Itoa(option.Port))
 
