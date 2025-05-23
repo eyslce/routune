@@ -1,0 +1,52 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Clash 开发工作流程
+
+## 环境设置
+
+1. 安装 Go 开发环境
+2. 克隆项目仓库
+3. 安装必要的开发工具：
+   - `gofmt`
+   - `golint`
+   - `go vet`
+   - `go mod`
+
+## 开发流程
+
+1. 创建新的功能分支
+2. 编写代码和测试
+3. 运行测试套件
+4. 提交代码审查
+5. 合并到主分支
+
+## 构建和测试
+
+1. 使用 `make` 命令构建项目
+2. 运行单元测试：`make test`
+3. 运行基准测试：`make benchmark`
+4. 检查代码质量：`make lint`
+
+## 发布流程
+
+1. 更新版本号
+2. 更新 CHANGELOG.md
+3. 创建发布标签
+4. 构建发布版本
+5. 发布到 GitHub
+
+## 文档维护
+
+1. 更新 README.md
+2. 更新 API 文档
+3. 更新配置文档
+4. 更新示例代码
+
+## 问题跟踪
+
+1. 使用 GitHub Issues 跟踪问题
+2. 使用 GitHub Projects 管理项目进度
+3. 使用 GitHub Actions 进行持续集成

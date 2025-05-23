@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Clash 项目概述
+
+Clash 是一个基于 Go 语言开发的网络代理工具，采用规则引擎进行流量路由。
+
+## 核心组件
+
+- **入站处理器**: 位于 [listener](mdc:listener) 目录
+- **规则引擎**: 位于 [rule](mdc:rule) 目录
+- **出站处理器**: 位于 [adapter](mdc:adapter) 目录
+- **DNS 解析器**: 位于 [dns](mdc:dns) 目录
+- **配置管理**: 位于 [config](mdc:config) 目录
+
+## 主要入口
+
+- 主程序入口: [main.go](mdc:main.go)
+- 配置文件示例: [config/config.yaml](mdc:config/config.yaml)
+
+## 开发指南
+
+1. 代码规范遵循 Go 标准规范
+2. 新功能开发请先创建对应的测试用例
+3. 提交代码前请运行 `make test` 确保测试通过
+4. 文档更新请同步更新 [docs](mdc:docs) 目录下的相关文档
