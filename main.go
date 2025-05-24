@@ -15,7 +15,7 @@ import (
 	"github.com/eyslce/routune/hub/executor"
 	"github.com/eyslce/routune/log"
 
-	"go.uber.org/automaxprocs/maxprocs"
+	_ "go.uber.org/automaxprocs"
 )
 
 var (
@@ -50,8 +50,6 @@ func init() {
 
 // main 函数是程序的入口点
 func main() {
-	// 设置最大 GOMAXPROCS，忽略日志输出
-	maxprocs.Set(maxprocs.Logger(func(string, ...any) {}))
 	// 如果设置了 -v 标志，则打印版本信息并退出
 	if version {
 		fmt.Printf("routune %s %s %s with %s %s\n", C.Version, runtime.GOOS, runtime.GOARCH, runtime.Version(), C.BuildTime)
