@@ -4,7 +4,7 @@ sidebarOrder: 1
 ---
 
 
-Premium 内核是开源 Clash 内核的 Fork 分支, 增加了以下功能:
+Premium 内核是开源 routune 内核的 Fork 分支, 增加了以下功能:
 
 - [TUN 设备](/zh_CN/premium/tun-device) 支持 `auto-redir` 和 `auto-route`
 - [eBPF 重定向到 TUN](/zh_CN/premium/ebpf)

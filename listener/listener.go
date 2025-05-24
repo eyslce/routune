@@ -7,16 +7,16 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/eyslce/clash/adapter/inbound"
-	"github.com/eyslce/clash/config"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/listener/http"
-	"github.com/eyslce/clash/listener/mixed"
-	"github.com/eyslce/clash/listener/redir"
-	"github.com/eyslce/clash/listener/socks"
-	"github.com/eyslce/clash/listener/tproxy"
-	"github.com/eyslce/clash/listener/tunnel"
-	"github.com/eyslce/clash/log"
+	"github.com/eyslce/routune/adapter/inbound"
+	"github.com/eyslce/routune/config"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/listener/http"
+	"github.com/eyslce/routune/listener/mixed"
+	"github.com/eyslce/routune/listener/redir"
+	"github.com/eyslce/routune/listener/socks"
+	"github.com/eyslce/routune/listener/tproxy"
+	"github.com/eyslce/routune/listener/tunnel"
+	"github.com/eyslce/routune/log"
 
 	"github.com/samber/lo"
 )
@@ -28,7 +28,7 @@ var (
 	tcpListeners = make(map[C.Inbound]C.Listener) // 存储 TCP 监听器，键为入站配置，值为监听器实例
 	udpListeners = make(map[C.Inbound]C.Listener) // 存储 UDP 监听器，键为入站配置，值为监听器实例
 
-	tunnelTCPListeners = make(map[string]*tunnel.Listener)    // 存储 Tunnel TCP 监听器，键为 "address/target/proxy"
+	tunnelTCPListeners = make(map[string]*tunnel.Listener)   // 存储 Tunnel TCP 监听器，键为 "address/target/proxy"
 	tunnelUDPListeners = make(map[string]*tunnel.PacketConn) // 存储 Tunnel UDP PacketConn，键为 "address/target/proxy"
 
 	// lock for recreate function
@@ -154,8 +154,8 @@ func closeListener(inbound C.Inbound) {
 // newInbounds: 新的入站配置列表。
 func getNeedCloseAndCreateInbound(originInbounds []C.Inbound, newInbounds []C.Inbound) ([]C.Inbound, []C.Inbound) {
 	needCloseMap := map[C.Inbound]bool{} // 用于快速查找需要关闭的入站配置
-	needClose := []C.Inbound{}            // 需要关闭的入站配置列表
-	needCreate := []C.Inbound{}           // 需要创建的入站配置列表
+	needClose := []C.Inbound{}           // 需要关闭的入站配置列表
+	needCreate := []C.Inbound{}          // 需要创建的入站配置列表
 
 	// 将所有原始入站配置加入 needCloseMap
 	for _, inbound := range originInbounds {
@@ -218,9 +218,9 @@ func ReCreatePortsListeners(ports Ports, tcpIn chan<- C.ConnContext, udpIn chan<
 func addPortInbound(inbounds []C.Inbound, inboundType C.InboundType, port int) []C.Inbound {
 	if port != 0 { // 仅当端口号非零时创建
 		inbounds = append(inbounds, C.Inbound{
-			Type:          inboundType,                       // 设置入站类型
+			Type:          inboundType,                          // 设置入站类型
 			BindAddress:   genAddr(bindAddress, port, allowLan), // 生成监听地址
-			IsFromPortCfg: true,                                // 标记此配置来自传统端口设置
+			IsFromPortCfg: true,                                 // 标记此配置来自传统端口设置
 		})
 	}
 	return inbounds
@@ -407,7 +407,7 @@ func fillPort(inbound C.Inbound, ports *Ports) {
 // addr: 监听地址字符串，例如 ":7890", "127.0.0.1:7890"。
 // 返回 true 如果端口号为零、为空或解析错误，否则返回 false。
 func portIsZero(addr string) bool {
-	_, port, err := net.SplitHostPort(addr) // 分割主机和端口
+	_, port, err := net.SplitHostPort(addr)      // 分割主机和端口
 	if port == "0" || port == "" || err != nil { // 检查端口是否为 "0"、空字符串或发生错误
 		return true
 	}

@@ -7,7 +7,7 @@ import (
 	"net/netip"
 	"strconv"
 
-	"github.com/eyslce/clash/component/auth"
+	"github.com/eyslce/routune/component/auth"
 
 	"github.com/eyslce/protobytes"
 )
@@ -20,7 +20,7 @@ type Command = uint8
 
 const (
 	CmdConnect Command = 0x01 // CONNECT 命令，用于建立 TCP 连接
-	CmdBind    Command = 0x02 // BIND 命令，用于建立 FTP 式的数据连接（Clash 中未使用）
+	CmdBind    Command = 0x02 // BIND 命令，用于建立 FTP 式的数据连接（routune 中未使用）
 )
 
 // Code 定义了 SOCKS4 响应代码的类型
@@ -63,7 +63,7 @@ func ServerHandshake(rw io.ReadWriter, authenticator auth.Authenticator) (addr s
 		return
 	}
 
-	// 读取命令，Clash 只支持 CONNECT 命令
+	// 读取命令，routune 只支持 CONNECT 命令
 	if command = r.ReadUint8(); command != CmdConnect {
 		err = errCommandNotSupported
 		return

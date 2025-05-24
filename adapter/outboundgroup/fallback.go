@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/eyslce/clash/adapter/outbound"
-	"github.com/eyslce/clash/common/singledo"
-	"github.com/eyslce/clash/component/dialer"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/constant/provider"
+	"github.com/eyslce/routune/adapter/outbound"
+	"github.com/eyslce/routune/common/singledo"
+	"github.com/eyslce/routune/component/dialer"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/constant/provider"
 )
 
 type Fallback struct {

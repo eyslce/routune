@@ -3,7 +3,7 @@ package fakeip
 import (
 	"net"
 
-	"github.com/eyslce/clash/component/profile/cachefile"
+	"github.com/eyslce/routune/component/profile/cachefile"
 )
 
 type cachefileStore struct {

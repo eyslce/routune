@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"github.com/eyslce/clash/constant"
+	"github.com/eyslce/routune/constant"
 )
 
 // Vehicle Type

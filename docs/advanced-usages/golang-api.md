@@ -1,11 +1,11 @@
 ---
-sidebarTitle: 在 Golang 程序中集成 Clash
+sidebarTitle: 在 Golang 程序中集成 routune
 sidebarOrder: 3
 ---
 
-# 在 Golang 程序中集成 Clash
+# 在 Golang 程序中集成 routune
 
-如果 Clash 不能满足您的需求, 您可以在自己的 Golang 代码中使用 Clash.
+如果 routune 不能满足您的需求, 您可以在自己的 Golang 代码中使用 routune.
 
 目前已经有基本的支持:
 
@@ -18,9 +18,9 @@ import (
 	"io"
 	"net"
 
-	"github.com/Dreamacro/clash/adapter/outbound"
-	"github.com/Dreamacro/clash/constant"
-	"github.com/Dreamacro/clash/listener/socks"
+	"github.com/Dreamacro/routune/adapter/outbound"
+	"github.com/Dreamacro/routune/constant"
+	"github.com/Dreamacro/routune/listener/socks"
 )
 
 func main() {

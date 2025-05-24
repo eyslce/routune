@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/eyslce/clash/adapter/inbound"
-	"github.com/eyslce/clash/common/pool"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/adapter/inbound"
+	"github.com/eyslce/routune/common/pool"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 type PacketConn struct {

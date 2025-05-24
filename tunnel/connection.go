@@ -7,9 +7,9 @@ import (
 	"net/netip"
 	"time"
 
-	N "github.com/eyslce/clash/common/net"
-	"github.com/eyslce/clash/common/pool"
-	C "github.com/eyslce/clash/constant"
+	N "github.com/eyslce/routune/common/net"
+	"github.com/eyslce/routune/common/pool"
+	C "github.com/eyslce/routune/constant"
 )
 
 // handleUDPToRemote 处理UDP数据包发送到远程服务器的逻辑

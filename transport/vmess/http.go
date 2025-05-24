@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"net/textproto"
 
-	"github.com/eyslce/clash/common/util"
+	"github.com/eyslce/routune/common/util"
 )
 
 type httpConn struct {

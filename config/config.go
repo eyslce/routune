@@ -8,25 +8,25 @@ import (
 	"os"
 	"strings"
 
-	"github.com/eyslce/clash/adapter"
-	"github.com/eyslce/clash/adapter/outbound"
-	"github.com/eyslce/clash/adapter/outboundgroup"
-	"github.com/eyslce/clash/adapter/provider"
-	"github.com/eyslce/clash/component/auth"
-	"github.com/eyslce/clash/component/fakeip"
-	"github.com/eyslce/clash/component/trie"
-	C "github.com/eyslce/clash/constant"
-	providerTypes "github.com/eyslce/clash/constant/provider"
-	"github.com/eyslce/clash/dns"
-	"github.com/eyslce/clash/log"
-	R "github.com/eyslce/clash/rule"
-	T "github.com/eyslce/clash/tunnel"
+	"github.com/eyslce/routune/adapter"
+	"github.com/eyslce/routune/adapter/outbound"
+	"github.com/eyslce/routune/adapter/outboundgroup"
+	"github.com/eyslce/routune/adapter/provider"
+	"github.com/eyslce/routune/component/auth"
+	"github.com/eyslce/routune/component/fakeip"
+	"github.com/eyslce/routune/component/trie"
+	C "github.com/eyslce/routune/constant"
+	providerTypes "github.com/eyslce/routune/constant/provider"
+	"github.com/eyslce/routune/dns"
+	"github.com/eyslce/routune/log"
+	R "github.com/eyslce/routune/rule"
+	T "github.com/eyslce/routune/tunnel"
 
 	"github.com/samber/lo"
 	"gopkg.in/yaml.v3"
 )
 
-// General 结构体定义了Clash的通用配置项。
+// General 结构体定义了Routune的通用配置项。
 // General config
 type General struct {
 	LegacyInbound
@@ -59,7 +59,7 @@ type LegacyInbound struct {
 	BindAddress string `json:"bind-address"`
 }
 
-// DNS 结构体定义了Clash的DNS相关配置。
+// DNS 结构体定义了Routune的DNS相关配置。
 // DNS config
 type DNS struct {
 	Enable            bool             `yaml:"enable"`
@@ -98,8 +98,8 @@ type Experimental struct {
 	UDPFallbackMatch bool `yaml:"udp-fallback-match"`
 }
 
-// Config 结构体是Clash配置的顶层容器，包含了所有解析后的配置信息。
-// Config is clash config manager
+// Config 结构体是Routune配置的顶层容器，包含了所有解析后的配置信息。
+// Config is routune config manager
 type Config struct {
 	General      *General
 	DNS          *DNS

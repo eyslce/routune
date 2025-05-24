@@ -1,4 +1,4 @@
-// Package outbound 实现了 Clash 的出站代理适配器
+// Package outbound 实现了 routune 的出站代理适配器
 package outbound
 
 import (
@@ -8,13 +8,13 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/eyslce/clash/common/structure"
-	"github.com/eyslce/clash/component/dialer"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/transport/shadowsocks/core"
-	obfs "github.com/eyslce/clash/transport/simple-obfs"
-	"github.com/eyslce/clash/transport/socks5"
-	v2rayObfs "github.com/eyslce/clash/transport/v2ray-plugin"
+	"github.com/eyslce/routune/common/structure"
+	"github.com/eyslce/routune/component/dialer"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/transport/shadowsocks/core"
+	obfs "github.com/eyslce/routune/transport/simple-obfs"
+	"github.com/eyslce/routune/transport/socks5"
+	v2rayObfs "github.com/eyslce/routune/transport/v2ray-plugin"
 )
 
 // ShadowSocks 实现了 Shadowsocks 代理适配器

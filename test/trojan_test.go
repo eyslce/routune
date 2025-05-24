@@ -9,11 +9,11 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/stretchr/testify/require"
 
-	"github.com/eyslce/clash/adapter/outbound"
-	C "github.com/eyslce/clash/constant"
+	"github.com/eyslce/routune/adapter/outbound"
+	C "github.com/eyslce/routune/constant"
 )
 
-func TestClash_Trojan(t *testing.T) {
+func TestRoutune_Trojan(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageTrojan,
 		ExposedPorts: defaultExposedPorts,
@@ -49,7 +49,7 @@ func TestClash_Trojan(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_TrojanGrpc(t *testing.T) {
+func TestRoutune_TrojanGrpc(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageXray,
 		ExposedPorts: defaultExposedPorts,
@@ -88,7 +88,7 @@ func TestClash_TrojanGrpc(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_TrojanWebsocket(t *testing.T) {
+func TestRoutune_TrojanWebsocket(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageTrojanGo,
 		ExposedPorts: defaultExposedPorts,

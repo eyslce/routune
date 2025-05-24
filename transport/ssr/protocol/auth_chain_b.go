@@ -4,7 +4,7 @@ import (
 	"net"
 	"sort"
 
-	"github.com/eyslce/clash/transport/ssr/tools"
+	"github.com/eyslce/routune/transport/ssr/tools"
 )
 
 func init() {

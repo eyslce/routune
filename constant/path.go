@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const Name = "clash"
+const Name = "routune"
 
 // Path is used to get the configuration path
 var Path = func() *path {

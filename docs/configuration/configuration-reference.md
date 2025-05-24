@@ -35,13 +35,13 @@ socks-port: 7891
 # "[aaaa::a8aa:ff:fe09:57d8]": 绑定单个 IPv6 地址
 # bind-address: '*'
 
-# Clash 路由工作模式
+# routune 路由工作模式
 # rule: 基于规则的数据包路由
 # global: 所有数据包将被转发到单个节点
 # direct: 直接将数据包转发到互联网
 mode: rule
 
-# 默认情况下, Clash 将日志打印到 STDOUT
+# 默认情况下, routune 将日志打印到 STDOUT
 # 日志级别: info / warning / error / debug / silent
 # log-level: info
 
@@ -51,7 +51,7 @@ mode: rule
 # RESTful Web API 监听地址
 external-controller: 127.0.0.1:9090
 
-# 配置目录的相对路径或静态 Web 资源目录的绝对路径. Clash core 将在
+# 配置目录的相对路径或静态 Web 资源目录的绝对路径. routune core 将在
 # `http://{{external-controller}}/ui` 中提供服务.
 # external-ui: folder
 
@@ -68,17 +68,17 @@ external-controller: 127.0.0.1:9090
 
 # 用于DNS服务器和连接建立的静态主机 (如/etc/hosts) .
 #
-# 支持通配符主机名 (例如 *.clash.dev, *.foo.*.example.com)
+# 支持通配符主机名 (例如 *.routune.dev, *.foo.*.example.com)
 # 非通配符域名优先级高于通配符域名
 # 例如 foo.example.com > *.example.com > .example.com
 # P.S. +.foo.com 等于 .foo.com 和 foo.com
 # hosts:
-  # '*.clash.dev': 127.0.0.1
+  # '*.routune.dev': 127.0.0.1
   # '.dev': 127.0.0.1
-  # 'alpha.clash.dev': '::1'
+  # 'alpha.routune.dev': '::1'
 
 # profile:
-  # 将 `select` 手动选择 结果存储在 $HOME/.config/clash/.cache 中
+  # 将 `select` 手动选择 结果存储在 $HOME/.config/routune/.cache 中
   # 如果不需要此行为, 请设置为 false
   # 当两个不同的配置具有同名的组时, 将共享所选值
   # store-selected: true
@@ -112,7 +112,7 @@ dns:
 
   # 支持 UDP、TCP、DoT、DoH. 您可以指定要连接的端口.
   # 所有 DNS 查询都直接发送到名称服务器, 无需代理
-  # Clash 使用第一个收到的响应作为 DNS 查询的结果.
+  # routune 使用第一个收到的响应作为 DNS 查询的结果.
   nameserver:
     - 114.114.114.114 # 默认值
     - 8.8.8.8 # 默认值
@@ -361,7 +361,7 @@ proxies:
 
 proxy-groups:
   # 中继链路代理节点. 节点不应包含中继. 不支持 UDP.
-  # 流量节点链路: clash <-> http <-> vmess <-> ss1 <-> ss2 <-> Internet
+  # 流量节点链路: routune <-> http <-> vmess <-> ss1 <-> ss2 <-> Internet
   - name: "relay"
     type: relay
     proxies:

@@ -3,8 +3,8 @@ package rules
 import (
 	"strings"
 
-	"github.com/eyslce/clash/component/mmdb"
-	C "github.com/eyslce/clash/constant"
+	"github.com/eyslce/routune/component/mmdb"
+	C "github.com/eyslce/routune/constant"
 )
 
 // Implements C.Rule

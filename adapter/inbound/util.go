@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/eyslce/clash/common/util"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/common/util"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 // parseSocksAddr 解析 SOCKS5 地址格式并返回元数据

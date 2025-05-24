@@ -5,12 +5,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/eyslce/clash/common/cache"
-	"github.com/eyslce/clash/component/fakeip"
-	"github.com/eyslce/clash/component/trie"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/context"
-	"github.com/eyslce/clash/log"
+	"github.com/eyslce/routune/common/cache"
+	"github.com/eyslce/routune/component/fakeip"
+	"github.com/eyslce/routune/component/trie"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/context"
+	"github.com/eyslce/routune/log"
 
 	D "github.com/miekg/dns"
 )

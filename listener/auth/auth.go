@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/eyslce/clash/component/auth"
+	"github.com/eyslce/routune/component/auth"
 )
 
 var authenticator auth.Authenticator

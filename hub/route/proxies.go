@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/eyslce/clash/adapter"
-	"github.com/eyslce/clash/adapter/outboundgroup"
-	"github.com/eyslce/clash/component/profile/cachefile"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/tunnel"
+	"github.com/eyslce/routune/adapter"
+	"github.com/eyslce/routune/adapter/outboundgroup"
+	"github.com/eyslce/routune/component/profile/cachefile"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/tunnel"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"

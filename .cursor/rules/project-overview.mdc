@@ -3,9 +3,9 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Clash 项目概述
+# routune 项目概述
 
-Clash 是一个基于 Go 语言开发的网络代理工具，采用规则引擎进行流量路由。
+routune 是一个基于 Go 语言开发的网络代理工具，采用规则引擎进行流量路由。
 
 ## 核心组件
 

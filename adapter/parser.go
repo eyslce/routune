@@ -3,9 +3,9 @@ package adapter
 import (
 	"fmt"
 
-	"github.com/eyslce/clash/adapter/outbound"
-	"github.com/eyslce/clash/common/structure"
-	C "github.com/eyslce/clash/constant"
+	"github.com/eyslce/routune/adapter/outbound"
+	"github.com/eyslce/routune/common/structure"
+	C "github.com/eyslce/routune/constant"
 )
 
 // ParseProxy 函数用于解析代理配置映射并创建相应的代理实例。

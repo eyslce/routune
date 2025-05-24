@@ -3,8 +3,8 @@ package socks
 import (
 	"net"
 
-	"github.com/eyslce/clash/common/pool"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/common/pool"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 // packet 结构体实现了 C.UDPPacket 接口，用于包装 SOCKS5 UDP 包。

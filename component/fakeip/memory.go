@@ -3,7 +3,7 @@ package fakeip
 import (
 	"net"
 
-	"github.com/eyslce/clash/common/cache"
+	"github.com/eyslce/routune/common/cache"
 )
 
 type memoryStore struct {

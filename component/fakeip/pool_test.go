@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/eyslce/clash/component/profile/cachefile"
-	"github.com/eyslce/clash/component/trie"
+	"github.com/eyslce/routune/component/profile/cachefile"
+	"github.com/eyslce/routune/component/trie"
 
 	"github.com/stretchr/testify/assert"
 	"go.etcd.io/bbolt"
@@ -31,7 +31,7 @@ func createCachefileStore(options Options) (*Pool, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	f, err := os.CreateTemp("", "clash")
+	f, err := os.CreateTemp("", "routune")
 	if err != nil {
 		return nil, "", err
 	}

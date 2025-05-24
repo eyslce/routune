@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"net/netip"
 
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/context"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/context"
 )
 
 // NewHTTPS 创建一个新的 HTTPS 连接上下文

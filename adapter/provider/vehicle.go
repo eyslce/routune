@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/eyslce/clash/component/dialer"
-	types "github.com/eyslce/clash/constant/provider"
+	"github.com/eyslce/routune/component/dialer"
+	types "github.com/eyslce/routune/constant/provider"
 )
 
 type FileVehicle struct {

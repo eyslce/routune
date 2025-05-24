@@ -7,7 +7,7 @@ import (
 	"io"
 	"net"
 
-	"github.com/eyslce/clash/common/pool"
+	"github.com/eyslce/routune/common/pool"
 )
 
 const (

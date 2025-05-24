@@ -1,12 +1,12 @@
-// Package outbound 实现了 Clash 的出站代理适配器
+// Package outbound 实现了 routune 的出站代理适配器
 package outbound
 
 import (
 	"context"
 	"net"
 
-	"github.com/eyslce/clash/component/dialer"
-	C "github.com/eyslce/clash/constant"
+	"github.com/eyslce/routune/component/dialer"
+	C "github.com/eyslce/routune/constant"
 )
 
 // Direct 实现了直连代理适配器

@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"time"
 
-	types "github.com/eyslce/clash/constant/provider"
-	"github.com/eyslce/clash/log"
+	types "github.com/eyslce/routune/constant/provider"
+	"github.com/eyslce/routune/log"
 )
 
 var (

@@ -5,23 +5,23 @@ import (
 	"os"
 	"sync"
 
-	"github.com/eyslce/clash/adapter"
-	"github.com/eyslce/clash/adapter/outboundgroup"
-	"github.com/eyslce/clash/component/auth"
-	"github.com/eyslce/clash/component/dialer"
-	"github.com/eyslce/clash/component/iface"
-	"github.com/eyslce/clash/component/profile"
-	"github.com/eyslce/clash/component/profile/cachefile"
-	"github.com/eyslce/clash/component/resolver"
-	"github.com/eyslce/clash/component/trie"
-	"github.com/eyslce/clash/config"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/constant/provider"
-	"github.com/eyslce/clash/dns"
-	"github.com/eyslce/clash/listener"
-	authStore "github.com/eyslce/clash/listener/auth"
-	"github.com/eyslce/clash/log"
-	"github.com/eyslce/clash/tunnel"
+	"github.com/eyslce/routune/adapter"
+	"github.com/eyslce/routune/adapter/outboundgroup"
+	"github.com/eyslce/routune/component/auth"
+	"github.com/eyslce/routune/component/dialer"
+	"github.com/eyslce/routune/component/iface"
+	"github.com/eyslce/routune/component/profile"
+	"github.com/eyslce/routune/component/profile/cachefile"
+	"github.com/eyslce/routune/component/resolver"
+	"github.com/eyslce/routune/component/trie"
+	"github.com/eyslce/routune/config"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/constant/provider"
+	"github.com/eyslce/routune/dns"
+	"github.com/eyslce/routune/listener"
+	authStore "github.com/eyslce/routune/listener/auth"
+	"github.com/eyslce/routune/log"
+	"github.com/eyslce/routune/tunnel"
 )
 
 var mux sync.Mutex // mux 用于保护对全局配置的并发访问
@@ -83,16 +83,16 @@ func ApplyConfig(cfg *config.Config, force bool) {
 	defer mux.Unlock() // 在函数返回时解锁
 
 	// 按顺序更新各个部分的配置
-	updateUsers(cfg.Users)                             // 更新用户认证信息
-	updateProxies(cfg.Proxies, cfg.Providers)          // 更新代理和代理提供者
-	updateRules(cfg.Rules)                             // 更新规则
-	updateHosts(cfg.Hosts)                             // 更新 Hosts
-	updateProfile(cfg)                                 // 更新 Profile 设置
-	updateGeneral(cfg.General, force)                  // 更新通用设置
-	updateInbounds(cfg.Inbounds, force)                // 更新入站连接监听器
-	updateDNS(cfg.DNS)                                 // 更新 DNS 设置
-	updateExperimental(cfg)                            // 更新实验性功能设置
-	updateTunnels(cfg.Tunnels)                         // 更新隧道设置
+	updateUsers(cfg.Users)                    // 更新用户认证信息
+	updateProxies(cfg.Proxies, cfg.Providers) // 更新代理和代理提供者
+	updateRules(cfg.Rules)                    // 更新规则
+	updateHosts(cfg.Hosts)                    // 更新 Hosts
+	updateProfile(cfg)                        // 更新 Profile 设置
+	updateGeneral(cfg.General, force)         // 更新通用设置
+	updateInbounds(cfg.Inbounds, force)       // 更新入站连接监听器
+	updateDNS(cfg.DNS)                        // 更新 DNS 设置
+	updateExperimental(cfg)                   // 更新实验性功能设置
+	updateTunnels(cfg.Tunnels)                // 更新隧道设置
 }
 
 // GetGeneral 获取当前的通用配置信息。
@@ -108,17 +108,17 @@ func GetGeneral() *config.General {
 	// 构建并返回 General 配置对象
 	general := &config.General{
 		LegacyInbound: config.LegacyInbound{
-			Port:        ports.Port,       // HTTP 代理端口
-			SocksPort:   ports.SocksPort,  // SOCKS5 代理端口
-			RedirPort:   ports.RedirPort,  // 透明代理（重定向）端口
-			TProxyPort:  ports.TProxyPort, // TProxy 代理端口 (Linux)
-			MixedPort:   ports.MixedPort,  // 混合代理端口 (HTTP 和 SOCKS)
-			AllowLan:    listener.AllowLan(),   // 是否允许局域网连接
+			Port:        ports.Port,             // HTTP 代理端口
+			SocksPort:   ports.SocksPort,        // SOCKS5 代理端口
+			RedirPort:   ports.RedirPort,        // 透明代理（重定向）端口
+			TProxyPort:  ports.TProxyPort,       // TProxy 代理端口 (Linux)
+			MixedPort:   ports.MixedPort,        // 混合代理端口 (HTTP 和 SOCKS)
+			AllowLan:    listener.AllowLan(),    // 是否允许局域网连接
 			BindAddress: listener.BindAddress(), // 监听地址
 		},
-		Authentication: authenticator,        // 认证用户列表
-		Mode:           tunnel.Mode(),        // 代理模式 (Rule, Global, Direct)
-		LogLevel:       log.Level(),          // 日志级别
+		Authentication: authenticator,         // 认证用户列表
+		Mode:           tunnel.Mode(),         // 代理模式 (Rule, Global, Direct)
+		LogLevel:       log.Level(),           // 日志级别
 		IPv6:           !resolver.DisableIPv6, // 是否启用 IPv6
 	}
 
@@ -137,7 +137,7 @@ func updateExperimental(c *config.Config) {
 func updateDNS(c *config.DNS) {
 	// 如果未启用 DNS 服务
 	if !c.Enable {
-		resolver.DefaultResolver = nil    // 清除默认解析器
+		resolver.DefaultResolver = nil   // 清除默认解析器
 		resolver.DefaultHostMapper = nil // 清除默认主机映射器
 		dns.ReCreateServer("", nil, nil) // 重新创建 DNS 服务（实际上是停止）
 		return
@@ -145,12 +145,12 @@ func updateDNS(c *config.DNS) {
 
 	// 构建 DNS 配置对象
 	cfg := dns.Config{
-		Main:         c.NameServer,       // 主 DNS 服务器
-		Fallback:     c.Fallback,         // 备用 DNS 服务器
-		IPv6:         c.IPv6,             // 是否启用 IPv6 DNS 解析
-		EnhancedMode: c.EnhancedMode,     // DNS 增强模式
-		Pool:         c.FakeIPRange,      // Fake IP 地址池
-		Hosts:        c.Hosts,            // 自定义 Hosts 记录
+		Main:         c.NameServer,   // 主 DNS 服务器
+		Fallback:     c.Fallback,     // 备用 DNS 服务器
+		IPv6:         c.IPv6,         // 是否启用 IPv6 DNS 解析
+		EnhancedMode: c.EnhancedMode, // DNS 增强模式
+		Pool:         c.FakeIPRange,  // Fake IP 地址池
+		Hosts:        c.Hosts,        // 自定义 Hosts 记录
 		FallbackFilter: dns.FallbackFilter{ // 备用 DNS 过滤器配置
 			GeoIP:     c.FallbackFilter.GeoIP,     // 是否启用 GeoIP 过滤
 			GeoIPCode: c.FallbackFilter.GeoIPCode, // GeoIP 国家代码
@@ -170,7 +170,7 @@ func updateDNS(c *config.DNS) {
 		m.PatchFrom(old.(*dns.ResolverEnhancer))
 	}
 
-	resolver.DefaultResolver = r    // 设置新的默认解析器
+	resolver.DefaultResolver = r   // 设置新的默认解析器
 	resolver.DefaultHostMapper = m // 设置新的默认主机映射器
 
 	dns.ReCreateServer(c.Listen, r, m) // 根据新配置重新创建 DNS 服务
@@ -221,8 +221,8 @@ func updateInbounds(inbounds []C.Inbound, force bool) {
 // general: 通用配置对象。
 // force: 是否强制应用需要重启监听器的配置。
 func updateGeneral(general *config.General, force bool) {
-	log.SetLevel(general.LogLevel) // 设置日志级别
-	tunnel.SetMode(general.Mode)   // 设置代理模式
+	log.SetLevel(general.LogLevel)       // 设置日志级别
+	tunnel.SetMode(general.Mode)         // 设置代理模式
 	resolver.DisableIPv6 = !general.IPv6 // 设置是否禁用 IPv6 DNS 解析
 
 	// 更新默认出站网络接口和路由标记
@@ -236,10 +236,10 @@ func updateGeneral(general *config.General, force bool) {
 		return
 	}
 
-	allowLan := general.AllowLan // 是否允许局域网连接
+	allowLan := general.AllowLan   // 是否允许局域网连接
 	listener.SetAllowLan(allowLan) // 应用设置
 
-	bindAddress := general.BindAddress // 监听地址
+	bindAddress := general.BindAddress   // 监听地址
 	listener.SetBindAddress(bindAddress) // 应用设置
 
 	// 更新传统入站监听器的端口
@@ -258,7 +258,7 @@ func updateGeneral(general *config.General, force bool) {
 // users: 用户认证信息列表。
 func updateUsers(users []auth.AuthUser) {
 	authenticator := auth.NewAuthenticator(users) // 创建新的认证器
-	authStore.SetAuthenticator(authenticator)      // 设置全局认证器
+	authStore.SetAuthenticator(authenticator)     // 设置全局认证器
 	// 如果认证器不为空，则记录日志
 	if authenticator != nil {
 		log.Infoln("Authentication of local server updated")

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	C "github.com/eyslce/clash/constant"
+	C "github.com/eyslce/routune/constant"
 )
 
 type PortType int

@@ -3,12 +3,12 @@ package socks
 import (
 	"net"
 
-	"github.com/eyslce/clash/adapter/inbound"
-	"github.com/eyslce/clash/common/pool"
-	"github.com/eyslce/clash/common/sockopt"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/log"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/adapter/inbound"
+	"github.com/eyslce/routune/common/pool"
+	"github.com/eyslce/routune/common/sockopt"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/log"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 // UDPListener 结构体封装了 SOCKS UDP 监听器的基本信息和操作

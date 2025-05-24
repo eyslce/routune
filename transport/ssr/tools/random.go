@@ -3,7 +3,7 @@ package tools
 import (
 	"encoding/binary"
 
-	"github.com/eyslce/clash/common/pool"
+	"github.com/eyslce/routune/common/pool"
 )
 
 // XorShift128Plus - a pseudorandom number generator

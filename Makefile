@@ -1,9 +1,9 @@
-NAME=clash
+NAME=routune
 BINDIR=bin
 VERSION=$(shell git describe --tags || echo "unknown version")
 BUILDTIME=$(shell date -u)
-GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-X "github.com/eyslce/clash/constant.Version=$(VERSION)" \
-		-X "github.com/eyslce/clash/constant.BuildTime=$(BUILDTIME)" \
+GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-X "github.com/eyslce/routune/constant.Version=$(VERSION)" \
+		-X "github.com/eyslce/routune/constant.BuildTime=$(BUILDTIME)" \
 		-w -s -buildid='
 
 PLATFORM_LIST = \

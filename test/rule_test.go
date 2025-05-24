@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestClash_RuleInbound(t *testing.T) {
+func TestRoutune_RuleInbound(t *testing.T) {
 	basic := `
 socks-port: 7890
 inbounds:

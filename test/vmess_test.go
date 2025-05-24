@@ -8,11 +8,11 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/stretchr/testify/require"
 
-	"github.com/eyslce/clash/adapter/outbound"
-	C "github.com/eyslce/clash/constant"
+	"github.com/eyslce/routune/adapter/outbound"
+	C "github.com/eyslce/routune/constant"
 )
 
-func TestClash_Vmess(t *testing.T) {
+func TestRoutune_Vmess(t *testing.T) {
 	configPath := C.Path.Resolve("vmess.json")
 
 	cfg := &container.Config{
@@ -47,7 +47,7 @@ func TestClash_Vmess(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessTLS(t *testing.T) {
+func TestRoutune_VmessTLS(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageVmess,
 		ExposedPorts: defaultExposedPorts,
@@ -86,7 +86,7 @@ func TestClash_VmessTLS(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessHTTP2(t *testing.T) {
+func TestRoutune_VmessHTTP2(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageVmess,
 		ExposedPorts: defaultExposedPorts,
@@ -130,7 +130,7 @@ func TestClash_VmessHTTP2(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessHTTP(t *testing.T) {
+func TestRoutune_VmessHTTP(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageVmess,
 		ExposedPorts: defaultExposedPorts,
@@ -182,7 +182,7 @@ func TestClash_VmessHTTP(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessWebsocket(t *testing.T) {
+func TestRoutune_VmessWebsocket(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageVmess,
 		ExposedPorts: defaultExposedPorts,
@@ -217,7 +217,7 @@ func TestClash_VmessWebsocket(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessWebsocketTLS(t *testing.T) {
+func TestRoutune_VmessWebsocketTLS(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageVmess,
 		ExposedPorts: defaultExposedPorts,
@@ -256,7 +256,7 @@ func TestClash_VmessWebsocketTLS(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessWebsocketTLSZero(t *testing.T) {
+func TestRoutune_VmessWebsocketTLSZero(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageVmess,
 		ExposedPorts: defaultExposedPorts,
@@ -295,7 +295,7 @@ func TestClash_VmessWebsocketTLSZero(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessGrpc(t *testing.T) {
+func TestRoutune_VmessGrpc(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageVmess,
 		ExposedPorts: defaultExposedPorts,
@@ -338,7 +338,7 @@ func TestClash_VmessGrpc(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessWebsocket0RTT(t *testing.T) {
+func TestRoutune_VmessWebsocket0RTT(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageVmess,
 		ExposedPorts: defaultExposedPorts,
@@ -378,7 +378,7 @@ func TestClash_VmessWebsocket0RTT(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_VmessWebsocketXray0RTT(t *testing.T) {
+func TestRoutune_VmessWebsocketXray0RTT(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageXray,
 		ExposedPorts: defaultExposedPorts,

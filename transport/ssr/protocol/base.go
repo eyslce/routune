@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/eyslce/clash/common/pool"
-	"github.com/eyslce/clash/log"
-	"github.com/eyslce/clash/transport/shadowsocks/core"
+	"github.com/eyslce/routune/common/pool"
+	"github.com/eyslce/routune/log"
+	"github.com/eyslce/routune/transport/shadowsocks/core"
 )
 
 type Base struct {

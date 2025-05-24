@@ -5,29 +5,29 @@ sidebarOrder: 2
 
 # 快速入手
 
-建议您在继续阅读本节之前, 先阅读[介绍](/zh_CN/configuration/introduction). 在您对Clash的工作原理有了简单的了解后, 您可以开始编写您自己的配置.
+建议您在继续阅读本节之前, 先阅读[介绍](/zh_CN/configuration/introduction). 在您对Routune的工作原理有了简单的了解后, 您可以开始编写您自己的配置.
 
 ## 配置文件
 
-主配置文件名为 `config.yaml`. 默认情况下, Clash会在 `$HOME/.config/clash` 目录读取配置文件. 如果该目录不存在, Clash会在该位置生成一个最小的配置文件.
+主配置文件名为 `config.yaml`. 默认情况下, Routune会在 `$HOME/.config/routune` 目录读取配置文件. 如果该目录不存在, Routune会在该位置生成一个最小的配置文件.
 
-如果您想将配置文件放在其他地方 (例如 `/etc/clash`) , 您可以使用命令行选项 `-d` 来指定配置目录:
+如果您想将配置文件放在其他地方 (例如 `/etc/routune`) , 您可以使用命令行选项 `-d` 来指定配置目录:
 
 ```shell
-clash -d . # current directory
-clash -d /etc/clash
+routune -d . # current directory
+routune -d /etc/routune
 ```
 
 或者, 您可以使用选项 `-f` 来指定配置文件:
 
 ```shell
-clash -f ./config.yaml
-clash -f /etc/clash/config.yaml
+routune -f ./config.yaml
+routune -f /etc/routune/config.yaml
 ```
 
 ## 特殊语法
 
-Clash 配置文件中有一些特殊的语法, 您可能需要了解:
+routune 配置文件中有一些特殊的语法, 您可能需要了解:
 
 ### IPv6 地址
 
@@ -39,9 +39,9 @@ Clash 配置文件中有一些特殊的语法, 您可能需要了解:
 
 ### DNS 通配符域名匹配
 
-在某些情况下, 您需要匹配通配符域名. 例如, 当您设置 [Clash DNS](/zh_CN/configuration/dns) 时, 您可能想要匹配 `localdomain` 的所有子域名.
+在某些情况下, 您需要匹配通配符域名. 例如, 当您设置 [routune DNS](/zh_CN/configuration/dns) 时, 您可能想要匹配 `localdomain` 的所有子域名.
 
-Clash 在 DNS 配置中提供了匹配不同级别通配符域名的支持, 其语法如下:
+routune 在 DNS 配置中提供了匹配不同级别通配符域名的支持, 其语法如下:
 
 ::: tip
 任何包含这些字符的域名都应该用单引号 (`'`) 包裹. 例如, `'*.google.com'`.

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/eyslce/clash/component/mmdb"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/log"
+	"github.com/eyslce/routune/component/mmdb"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/log"
 )
 
 // downloadMMDB 函数从指定的URL下载MMDB文件并保存到给定的路径。
@@ -55,7 +55,7 @@ func InitMMDB() error {
 	return nil
 }
 
-// Init 函数用于准备Clash运行所需的必要文件和目录。
+// Init 函数用于准备Routune运行所需的必要文件和目录。
 // 它接收一个表示配置目录路径的字符串参数。
 // 主要工作包括：
 // 1. 创建配置目录 (如果不存在)。

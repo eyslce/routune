@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/eyslce/clash/adapter/outboundgroup"
-	"github.com/eyslce/clash/common/structure"
+	"github.com/eyslce/routune/adapter/outboundgroup"
+	"github.com/eyslce/routune/common/structure"
 )
 
 // trimArr 函数接收一个字符串切片，并返回一个新的字符串切片，

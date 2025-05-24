@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/eyslce/clash/common/pool"
-	"github.com/eyslce/clash/transport/ssr/tools"
+	"github.com/eyslce/routune/common/pool"
+	"github.com/eyslce/routune/transport/ssr/tools"
 )
 
 func init() {

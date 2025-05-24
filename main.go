@@ -9,11 +9,11 @@ import (
 	"runtime"
 	"syscall"
 
-	"github.com/eyslce/clash/config"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/hub"
-	"github.com/eyslce/clash/hub/executor"
-	"github.com/eyslce/clash/log"
+	"github.com/eyslce/routune/config"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/hub"
+	"github.com/eyslce/routune/hub/executor"
+	"github.com/eyslce/routune/log"
 
 	"go.uber.org/automaxprocs/maxprocs"
 )
@@ -37,7 +37,7 @@ func init() {
 	flag.StringVar(&externalUI, "ext-ui", "", "override external ui directory")
 	flag.StringVar(&externalController, "ext-ctl", "", "override external controller address")
 	flag.StringVar(&secret, "secret", "", "override secret for RESTful API")
-	flag.BoolVar(&version, "v", false, "show current version of clash")
+	flag.BoolVar(&version, "v", false, "show current version of routune")
 	flag.BoolVar(&testConfig, "t", false, "test configuration and exit")
 	flag.Parse() // 解析命令行参数
 
@@ -54,7 +54,7 @@ func main() {
 	maxprocs.Set(maxprocs.Logger(func(string, ...any) {}))
 	// 如果设置了 -v 标志，则打印版本信息并退出
 	if version {
-		fmt.Printf("Clash %s %s %s with %s %s\n", C.Version, runtime.GOOS, runtime.GOARCH, runtime.Version(), C.BuildTime)
+		fmt.Printf("routune %s %s %s with %s %s\n", C.Version, runtime.GOOS, runtime.GOARCH, runtime.Version(), C.BuildTime)
 		return
 	}
 

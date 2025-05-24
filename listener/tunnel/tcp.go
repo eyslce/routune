@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/eyslce/clash/adapter/inbound"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/adapter/inbound"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 type Listener struct {

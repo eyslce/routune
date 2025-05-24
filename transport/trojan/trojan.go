@@ -12,9 +12,9 @@ import (
 	"net/http"
 	"sync"
 
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/transport/socks5"
-	"github.com/eyslce/clash/transport/vmess"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/transport/socks5"
+	"github.com/eyslce/routune/transport/vmess"
 
 	"github.com/eyslce/protobytes"
 )

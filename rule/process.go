@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	C "github.com/eyslce/clash/constant"
+	C "github.com/eyslce/routune/constant"
 )
 
 // Implements C.Rule

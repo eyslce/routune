@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net"
 
-	"github.com/eyslce/clash/component/iface"
+	"github.com/eyslce/routune/component/iface"
 
 	"github.com/insomniacslk/dhcp/dhcpv4"
 )

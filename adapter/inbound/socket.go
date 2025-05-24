@@ -5,9 +5,9 @@ import (
 	"net"
 	"net/netip"
 
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/context"
-	"github.com/eyslce/clash/transport/socks5"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/context"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 // NewSocket 创建一个新的 Socket 连接上下文

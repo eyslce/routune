@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/eyslce/clash/common/pool"
+	"github.com/eyslce/routune/common/pool"
 
 	"github.com/eyslce/protobytes"
 )

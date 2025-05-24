@@ -6,9 +6,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/eyslce/clash/common/cache"
-	"github.com/eyslce/clash/component/profile/cachefile"
-	"github.com/eyslce/clash/component/trie"
+	"github.com/eyslce/routune/common/cache"
+	"github.com/eyslce/routune/component/profile/cachefile"
+	"github.com/eyslce/routune/component/trie"
 )
 
 type store interface {

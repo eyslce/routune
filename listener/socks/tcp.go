@@ -4,12 +4,12 @@ import (
 	"io"
 	"net"
 
-	"github.com/eyslce/clash/adapter/inbound"
-	N "github.com/eyslce/clash/common/net"
-	C "github.com/eyslce/clash/constant"
-	authStore "github.com/eyslce/clash/listener/auth"
-	"github.com/eyslce/clash/transport/socks4"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/adapter/inbound"
+	N "github.com/eyslce/routune/common/net"
+	C "github.com/eyslce/routune/constant"
+	authStore "github.com/eyslce/routune/listener/auth"
+	"github.com/eyslce/routune/transport/socks4"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 // Listener 结构体封装了 SOCKS TCP 监听器的基本信息和操作

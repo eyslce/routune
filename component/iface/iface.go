@@ -5,7 +5,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/eyslce/clash/common/singledo"
+	"github.com/eyslce/routune/common/singledo"
 )
 
 type Interface struct {

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/eyslce/clash/tunnel/statistic"
+	"github.com/eyslce/routune/tunnel/statistic"
 
 	"github.com/eyslce/protobytes"
 	"github.com/go-chi/chi/v5"

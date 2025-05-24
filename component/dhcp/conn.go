@@ -5,7 +5,7 @@ import (
 	"net"
 	"runtime"
 
-	"github.com/eyslce/clash/component/dialer"
+	"github.com/eyslce/routune/component/dialer"
 )
 
 func ListenDHCPClient(ctx context.Context, ifaceName string) (net.PacketConn, error) {

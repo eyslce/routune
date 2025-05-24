@@ -8,8 +8,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/eyslce/clash/common/cache"
-	"github.com/eyslce/clash/common/picker"
+	"github.com/eyslce/routune/common/cache"
+	"github.com/eyslce/routune/common/picker"
 
 	D "github.com/miekg/dns"
 	"github.com/samber/lo"

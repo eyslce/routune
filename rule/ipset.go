@@ -1,9 +1,9 @@
 package rules
 
 import (
-	"github.com/eyslce/clash/component/ipset"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/log"
+	"github.com/eyslce/routune/component/ipset"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/log"
 )
 
 // Implements C.Rule

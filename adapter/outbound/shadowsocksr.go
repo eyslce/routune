@@ -1,4 +1,4 @@
-// Package outbound 实现了 Clash 的出站代理适配器
+// Package outbound 实现了 routune 的出站代理适配器
 package outbound
 
 import (
@@ -7,13 +7,13 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/eyslce/clash/component/dialer"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/transport/shadowsocks/core"
-	"github.com/eyslce/clash/transport/shadowsocks/shadowaead"
-	"github.com/eyslce/clash/transport/shadowsocks/shadowstream"
-	"github.com/eyslce/clash/transport/ssr/obfs"
-	"github.com/eyslce/clash/transport/ssr/protocol"
+	"github.com/eyslce/routune/component/dialer"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/transport/shadowsocks/core"
+	"github.com/eyslce/routune/transport/shadowsocks/shadowaead"
+	"github.com/eyslce/routune/transport/shadowsocks/shadowstream"
+	"github.com/eyslce/routune/transport/ssr/obfs"
+	"github.com/eyslce/routune/transport/ssr/protocol"
 )
 
 // ShadowSocksR 实现了 ShadowsocksR 代理适配器
@@ -102,7 +102,7 @@ func (ssr *ShadowSocksR) ListenPacketContext(ctx context.Context, metadata *C.Me
 // NewShadowSocksR 创建一个新的 ShadowsocksR 代理适配器
 func NewShadowSocksR(option ShadowSocksROption) (*ShadowSocksR, error) {
 	// SSR protocol compatibility
-	// https://github.com/eyslce/clash/pull/2056
+	// https://github.com/eyslce/routune/pull/2056
 	if option.Cipher == "none" {
 		option.Cipher = "dummy"
 	}

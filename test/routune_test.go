@@ -21,10 +21,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/eyslce/clash/adapter/outbound"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/hub/executor"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/adapter/outbound"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/hub/executor"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 const (
@@ -550,7 +550,7 @@ func testPacketConnTimeout(t *testing.T, pc net.PacketConn) error {
 func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 	conn, err := proxy.DialContext(context.Background(), &C.Metadata{
 		Host:    localIP.String(),
-		DstPort: "10001",
+		DstPort: 10001,
 	})
 	require.NoError(t, err)
 	defer conn.Close()
@@ -558,7 +558,7 @@ func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 
 	conn, err = proxy.DialContext(context.Background(), &C.Metadata{
 		Host:    localIP.String(),
-		DstPort: "10001",
+		DstPort: 10001,
 	})
 	require.NoError(t, err)
 	defer conn.Close()
@@ -571,7 +571,7 @@ func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 	pc, err := proxy.ListenPacketContext(context.Background(), &C.Metadata{
 		NetWork: C.UDP,
 		DstIP:   localIP,
-		DstPort: "10001",
+		DstPort: 10001,
 	})
 	require.NoError(t, err)
 	defer pc.Close()
@@ -581,7 +581,7 @@ func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 	pc, err = proxy.ListenPacketContext(context.Background(), &C.Metadata{
 		NetWork: C.UDP,
 		DstIP:   localIP,
-		DstPort: "10001",
+		DstPort: 10001,
 	})
 	require.NoError(t, err)
 	defer pc.Close()
@@ -591,7 +591,7 @@ func testSuit(t *testing.T, proxy C.ProxyAdapter) {
 	pc, err = proxy.ListenPacketContext(context.Background(), &C.Metadata{
 		NetWork: C.UDP,
 		DstIP:   localIP,
-		DstPort: "10001",
+		DstPort: 10001,
 	})
 	require.NoError(t, err)
 	defer pc.Close()
@@ -628,7 +628,7 @@ func benchmarkProxy(b *testing.B, proxy C.ProxyAdapter) {
 
 	conn, err := proxy.DialContext(context.Background(), &C.Metadata{
 		Host:    localIP.String(),
-		DstPort: "10001",
+		DstPort: 10001,
 	})
 	require.NoError(b, err)
 
@@ -651,7 +651,7 @@ func benchmarkProxy(b *testing.B, proxy C.ProxyAdapter) {
 	})
 }
 
-func TestClash_Basic(t *testing.T) {
+func TestRoutune_Basic(t *testing.T) {
 	basic := `
 mixed-port: 10000
 log-level: silent

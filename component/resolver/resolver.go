@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/eyslce/clash/component/trie"
+	"github.com/eyslce/routune/component/trie"
 
 	"github.com/miekg/dns"
 )

@@ -6,14 +6,14 @@ import (
 	"testing"
 	"time"
 
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/listener"
-	"github.com/eyslce/clash/tunnel"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/listener"
+	"github.com/eyslce/routune/tunnel"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestClash_Listener(t *testing.T) {
+func TestRoutune_Listener(t *testing.T) {
 	basic := `
 log-level: silent
 port: 7890
@@ -34,7 +34,7 @@ mixed-port: 7894
 	}
 }
 
-func TestClash_ListenerCreate(t *testing.T) {
+func TestRoutune_ListenerCreate(t *testing.T) {
 	basic := `
 log-level: silent
 `

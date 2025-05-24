@@ -3,7 +3,7 @@ package rules
 import (
 	"net"
 
-	C "github.com/eyslce/clash/constant"
+	C "github.com/eyslce/routune/constant"
 )
 
 type IPCIDROption func(*IPCIDR)

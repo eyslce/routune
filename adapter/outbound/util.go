@@ -4,9 +4,9 @@ import (
 	"net"
 	"time"
 
-	"github.com/eyslce/clash/component/resolver"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/component/resolver"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/transport/socks5"
 
 	"github.com/eyslce/protobytes"
 )

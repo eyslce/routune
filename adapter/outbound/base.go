@@ -1,4 +1,4 @@
-// Package outbound 实现了 Clash 的出站代理适配器
+// Package outbound 实现了 routune 的出站代理适配器
 package outbound
 
 import (
@@ -7,8 +7,8 @@ import (
 	"errors"
 	"net"
 
-	"github.com/eyslce/clash/component/dialer"
-	C "github.com/eyslce/clash/constant"
+	"github.com/eyslce/routune/component/dialer"
+	C "github.com/eyslce/routune/constant"
 )
 
 // Base 是出站代理适配器的基础结构体

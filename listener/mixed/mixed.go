@@ -3,13 +3,13 @@ package mixed
 import (
 	"net"
 
-	"github.com/eyslce/clash/common/cache"
-	N "github.com/eyslce/clash/common/net"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/listener/http"
-	"github.com/eyslce/clash/listener/socks"
-	"github.com/eyslce/clash/transport/socks4"
-	"github.com/eyslce/clash/transport/socks5"
+	"github.com/eyslce/routune/common/cache"
+	N "github.com/eyslce/routune/common/net"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/listener/http"
+	"github.com/eyslce/routune/listener/socks"
+	"github.com/eyslce/routune/transport/socks4"
+	"github.com/eyslce/routune/transport/socks5"
 )
 
 type Listener struct {

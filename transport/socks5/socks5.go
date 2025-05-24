@@ -9,7 +9,7 @@ import (
 	"net/netip"
 	"strconv"
 
-	"github.com/eyslce/clash/component/auth"
+	"github.com/eyslce/routune/component/auth"
 
 	"github.com/eyslce/protobytes"
 )

@@ -1,7 +1,7 @@
 package rules
 
 import (
-	C "github.com/eyslce/clash/constant"
+	C "github.com/eyslce/routune/constant"
 )
 
 // Implements C.Rule

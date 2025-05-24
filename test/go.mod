@@ -1,18 +1,18 @@
-module clash-test
+module routune-test
 
 go 1.21
 
 require (
 	github.com/docker/docker v24.0.5+incompatible
 	github.com/docker/go-connections v0.4.0
-	github.com/eyslce/clash v0.0.0-20231221040902-cca4e0d53d8e
+	github.com/eyslce/routune v0.0.0-20231221040902-cca4e0d53d8e
 	github.com/miekg/dns v1.1.55
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/automaxprocs v1.5.3
 	golang.org/x/net v0.14.0
 )
 
-replace github.com/eyslce/clash => ../
+replace github.com/eyslce/routune => ../
 
 require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect

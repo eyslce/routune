@@ -9,27 +9,27 @@ import (
 	"sync"
 	"time"
 
-	"github.com/eyslce/clash/adapter/inbound"
-	"github.com/eyslce/clash/component/nat"
-	P "github.com/eyslce/clash/component/process"
-	"github.com/eyslce/clash/component/resolver"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/constant/provider"
-	icontext "github.com/eyslce/clash/context"
-	"github.com/eyslce/clash/log"
-	"github.com/eyslce/clash/tunnel/statistic"
+	"github.com/eyslce/routune/adapter/inbound"
+	"github.com/eyslce/routune/component/nat"
+	P "github.com/eyslce/routune/component/process"
+	"github.com/eyslce/routune/component/resolver"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/constant/provider"
+	icontext "github.com/eyslce/routune/context"
+	"github.com/eyslce/routune/log"
+	"github.com/eyslce/routune/tunnel/statistic"
 
 	"go.uber.org/atomic"
 )
 
 var (
-	tcpQueue  = make(chan C.ConnContext, 200)         // TCP 连接上下文队列，用于异步处理 TCP 连接
+	tcpQueue  = make(chan C.ConnContext, 200)          // TCP 连接上下文队列，用于异步处理 TCP 连接
 	udpQueue  = make(chan *inbound.PacketAdapter, 200) // UDP 包适配器队列，用于异步处理 UDP 包
-	natTable  = nat.New()                               // NAT 表，用于跟踪 UDP 会话
-	rules     []C.Rule                                  // 规则列表
-	proxies   = make(map[string]C.Proxy)                // 代理映射，存储所有可用的代理
-	providers map[string]provider.ProxyProvider         // 代理提供者映射
-	configMux sync.RWMutex                              // 用于保护 rules, proxies, providers 的读写锁
+	natTable  = nat.New()                              // NAT 表，用于跟踪 UDP 会话
+	rules     []C.Rule                                 // 规则列表
+	proxies   = make(map[string]C.Proxy)               // 代理映射，存储所有可用的代理
+	providers map[string]provider.ProxyProvider        // 代理提供者映射
+	configMux sync.RWMutex                             // 用于保护 rules, proxies, providers 的读写锁
 
 	// Outbound Rule
 	mode = Rule // 当前的隧道模式 (Rule, Global, Direct)
@@ -68,9 +68,9 @@ func Rules() []C.Rule {
 // UpdateRules 更新规则列表。
 // newRules: 新的规则列表。
 func UpdateRules(newRules []C.Rule) {
-	configMux.Lock()         // 加写锁保护规则列表的并发访问
-	rules = newRules           // 更新规则列表
-	configMux.Unlock()       // 解写锁
+	configMux.Lock()   // 加写锁保护规则列表的并发访问
+	rules = newRules   // 更新规则列表
+	configMux.Unlock() // 解写锁
 }
 
 // Proxies 返回当前的代理映射。
@@ -92,8 +92,8 @@ func Providers() map[string]provider.ProxyProvider {
 // newProviders: 新的代理提供者映射。
 func UpdateProxies(newProxies map[string]C.Proxy, newProviders map[string]provider.ProxyProvider) {
 	configMux.Lock()         // 加写锁保护代理和提供者映射的并发访问
-	proxies = newProxies       // 更新代理映射
-	providers = newProviders   // 更新代理提供者映射
+	proxies = newProxies     // 更新代理映射
+	providers = newProviders // 更新代理提供者映射
 	configMux.Unlock()       // 解写锁
 }
 
@@ -113,7 +113,7 @@ func SetMode(m TunnelMode) {
 func processUDP() {
 	queue := udpQueue
 	for conn := range queue { // 不断从队列中读取 UDP 包
-		handleUDPConn(conn)    // 处理 UDP 连接（包）
+		handleUDPConn(conn) // 处理 UDP 连接（包）
 	}
 }
 
@@ -151,6 +151,7 @@ func needLookupIP(metadata *C.Metadata) bool {
 //   - 如果找到主机名，则更新 metadata.Host 和 metadata.DNSMode。
 //   - 如果启用了 FakeIP，则将 metadata.DstIP 清空，并将 metadata.DNSMode 设置为 C.DNSFakeIP。
 //   - 如果主机在自定义 Hosts 中，则更新 metadata.DstIP。
+//
 // - 如果 metadata.DstIP 是一个 FakeIP 但无法找到对应的主机名，则返回错误。
 func preHandleMetadata(metadata *C.Metadata) error {
 	// 如果 Host 字段是 IP 地址字符串，则解析为 IP 地址
@@ -163,10 +164,10 @@ func preHandleMetadata(metadata *C.Metadata) error {
 	if needLookupIP(metadata) {
 		host, exist := resolver.FindHostByIP(metadata.DstIP) // 尝试通过 IP 查找主机名
 		if exist {
-			metadata.Host = host // 找到了主机名，更新 metadata
+			metadata.Host = host            // 找到了主机名，更新 metadata
 			metadata.DNSMode = C.DNSMapping // 标记 DNS 解析模式为 IP->Host 映射
-			if resolver.FakeIPEnabled() { // 如果启用了 FakeIP
-				metadata.DstIP = nil             // 清除 DstIP，因为将通过 FakeIP 机制处理
+			if resolver.FakeIPEnabled() {   // 如果启用了 FakeIP
+				metadata.DstIP = nil           // 清除 DstIP，因为将通过 FakeIP 机制处理
 				metadata.DNSMode = C.DNSFakeIP // 标记 DNS 解析模式为 FakeIP
 			} else if node := resolver.DefaultHosts.Search(host); node != nil { // 如果主机在自定义 Hosts 中
 				// redir-host (透明代理 Host 模式) 需要查找 hosts 文件
@@ -223,16 +224,16 @@ func resolveMetadata(ctx C.PlainContext, metadata *C.Metadata) (proxy C.Proxy, r
 // 3. 调用 preHandleMetadata 对元数据进行预处理。
 // 4. 如果元数据中的主机名未解析，进行 DNS 解析获取目标 IP。
 // 5. 使用 NAT 表 (natTable) 管理 UDP 会话：
-//    - 如果当前源地址的会话已存在，则直接将包转发到远端。
-//    - 如果会话不存在，则创建新的会话：
-//      - 使用锁确保同一源地址的会话创建过程是串行的。
-//      - 调用 resolveMetadata 解析代理和规则。
-//      - 使用选定的代理建立到目标地址的 UDP 连接 (ListenPacketContext)。
-//      - 创建 UDP 流量追踪器 (statistic.NewUDPTracker)。
-//      - 记录日志。
-//      - 启动 handleUDPToLocal goroutine 处理从远端返回给本地的数据。
-//      - 将新创建的 UDP 连接存入 NAT 表。
-//      - 将当前包转发到远端。
+//   - 如果当前源地址的会话已存在，则直接将包转发到远端。
+//   - 如果会话不存在，则创建新的会话：
+//   - 使用锁确保同一源地址的会话创建过程是串行的。
+//   - 调用 resolveMetadata 解析代理和规则。
+//   - 使用选定的代理建立到目标地址的 UDP 连接 (ListenPacketContext)。
+//   - 创建 UDP 流量追踪器 (statistic.NewUDPTracker)。
+//   - 记录日志。
+//   - 启动 handleUDPToLocal goroutine 处理从远端返回给本地的数据。
+//   - 将新创建的 UDP 连接存入 NAT 表。
+//   - 将当前包转发到远端。
 func handleUDPConn(packet *inbound.PacketAdapter) {
 	metadata := packet.Metadata() // 获取元数据
 	// 校验元数据是否有效
@@ -274,7 +275,7 @@ func handleUDPConn(packet *inbound.PacketAdapter) {
 	// 定义一个闭包，尝试从 NAT 表获取现有连接并处理
 	handle := func() bool {
 		pc := natTable.Get(key) // 从 NAT 表获取连接
-		if pc != nil { // 如果连接已存在
+		if pc != nil {          // 如果连接已存在
 			handleUDPToRemote(packet, pc, metadata) // 将包发送到远端
 			return true
 		}
@@ -301,7 +302,7 @@ func handleUDPConn(packet *inbound.PacketAdapter) {
 		if loaded {
 			cond.L.Lock()   // 获取锁
 			cond.Wait()     // 等待创建者完成并发出通知
-			handle()         // 再次尝试处理（此时连接应该已经创建好了）
+			handle()        // 再次尝试处理（此时连接应该已经创建好了）
 			cond.L.Unlock() // 释放锁
 			return
 		}
@@ -375,7 +376,7 @@ func handleUDPConn(packet *inbound.PacketAdapter) {
 		go handleUDPToLocal(packet.UDPPacket, pc, key, oAddr, fAddr)
 
 		natTable.Set(key, pc) // 将新创建的连接存入 NAT 表
-		handle()               // 再次调用 handle，将当前的第一个包发送出去
+		handle()              // 再次调用 handle，将当前的第一个包发送出去
 	}()
 }
 
@@ -480,13 +481,14 @@ func shouldResolveIP(rule C.Rule, metadata *C.Metadata) bool {
 // 1. 加读锁保护规则和代理的并发访问。
 // 2. 如果元数据中的主机名在自定义 Hosts 中，则使用 Hosts 中的 IP 更新 metadata.DstIP。
 // 3. 遍历规则列表：
-//    - 如果当前规则需要解析 IP (shouldResolveIP 返回 true) 且 IP 尚未解析，则进行 DNS 解析并更新 metadata.DstIP。
-//    - 如果当前规则需要查找进程信息 (rule.ShouldFindProcess()) 且尚未查找，则尝试查找并更新 metadata.ProcessPath。
-//    - 调用 rule.Match(metadata) 进行匹配。
-//    - 如果匹配成功：
-//      - 获取规则指定的代理适配器。
-//      - 如果是 UDP 连接，且代理不支持 UDP，并且启用了 UDPFallbackMatch，则跳过此规则，继续匹配下一条。
-//      - 返回匹配到的代理和规则。
+//   - 如果当前规则需要解析 IP (shouldResolveIP 返回 true) 且 IP 尚未解析，则进行 DNS 解析并更新 metadata.DstIP。
+//   - 如果当前规则需要查找进程信息 (rule.ShouldFindProcess()) 且尚未查找，则尝试查找并更新 metadata.ProcessPath。
+//   - 调用 rule.Match(metadata) 进行匹配。
+//   - 如果匹配成功：
+//   - 获取规则指定的代理适配器。
+//   - 如果是 UDP 连接，且代理不支持 UDP，并且启用了 UDPFallbackMatch，则跳过此规则，继续匹配下一条。
+//   - 返回匹配到的代理和规则。
+//
 // 4. 如果没有匹配到任何规则，则返回名为 "DIRECT" 的代理。
 func match(metadata *C.Metadata) (C.Proxy, C.Rule, error) {
 	configMux.RLock()         // 加读锁
@@ -499,7 +501,7 @@ func match(metadata *C.Metadata) (C.Proxy, C.Rule, error) {
 	if node := resolver.DefaultHosts.Search(metadata.Host); node != nil {
 		ip := node.Data.(net.IP)
 		metadata.DstIP = ip // 使用 Hosts 文件中的 IP
-		resolved = true       // 标记已解析
+		resolved = true     // 标记已解析
 	}
 
 	// 遍历所有规则
@@ -538,7 +540,7 @@ func match(metadata *C.Metadata) (C.Proxy, C.Rule, error) {
 		// 规则匹配
 		if rule.Match(metadata) {
 			adapter, ok := proxies[rule.Adapter()] // 获取规则指定的代理名称对应的代理实例
-			if !ok { // 如果代理不存在，则跳过此规则
+			if !ok {                               // 如果代理不存在，则跳过此规则
 				continue
 			}
 

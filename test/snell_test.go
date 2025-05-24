@@ -8,11 +8,11 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/stretchr/testify/require"
 
-	"github.com/eyslce/clash/adapter/outbound"
-	C "github.com/eyslce/clash/constant"
+	"github.com/eyslce/routune/adapter/outbound"
+	C "github.com/eyslce/routune/constant"
 )
 
-func TestClash_SnellObfsHTTP(t *testing.T) {
+func TestRoutune_SnellObfsHTTP(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageSnell,
 		ExposedPorts: defaultExposedPorts,
@@ -45,7 +45,7 @@ func TestClash_SnellObfsHTTP(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_SnellObfsTLS(t *testing.T) {
+func TestRoutune_SnellObfsTLS(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageSnell,
 		ExposedPorts: defaultExposedPorts,
@@ -78,7 +78,7 @@ func TestClash_SnellObfsTLS(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_Snell(t *testing.T) {
+func TestRoutune_Snell(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageSnell,
 		ExposedPorts: defaultExposedPorts,
@@ -108,7 +108,7 @@ func TestClash_Snell(t *testing.T) {
 	testSuit(t, proxy)
 }
 
-func TestClash_Snellv3(t *testing.T) {
+func TestRoutune_Snellv3(t *testing.T) {
 	cfg := &container.Config{
 		Image:        ImageSnell,
 		ExposedPorts: defaultExposedPorts,

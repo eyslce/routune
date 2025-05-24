@@ -4,7 +4,7 @@ import (
 	"net"
 	"syscall"
 
-	"github.com/eyslce/clash/component/iface"
+	"github.com/eyslce/routune/component/iface"
 
 	"golang.org/x/sys/unix"
 )

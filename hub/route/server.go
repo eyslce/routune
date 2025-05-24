@@ -10,9 +10,9 @@ import (
 	"time"
 	"unsafe"
 
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/log"
-	"github.com/eyslce/clash/tunnel/statistic"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/log"
+	"github.com/eyslce/routune/tunnel/statistic"
 
 	"github.com/eyslce/protobytes"
 	"github.com/go-chi/chi/v5"
@@ -140,7 +140,7 @@ func authentication(next http.Handler) http.Handler {
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	render.JSON(w, r, render.M{"hello": "clash"})
+	render.JSON(w, r, render.M{"hello": "routune"})
 }
 
 func traffic(w http.ResponseWriter, r *http.Request) {

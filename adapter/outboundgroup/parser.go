@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/eyslce/clash/adapter/outbound"
-	"github.com/eyslce/clash/adapter/provider"
-	"github.com/eyslce/clash/common/structure"
-	C "github.com/eyslce/clash/constant"
-	types "github.com/eyslce/clash/constant/provider"
+	"github.com/eyslce/routune/adapter/outbound"
+	"github.com/eyslce/routune/adapter/provider"
+	"github.com/eyslce/routune/common/structure"
+	C "github.com/eyslce/routune/constant"
+	types "github.com/eyslce/routune/constant/provider"
 
 	regexp "github.com/dlclark/regexp2"
 )

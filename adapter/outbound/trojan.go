@@ -1,4 +1,4 @@
-// Package outbound 实现了 Clash 的出站代理适配器
+// Package outbound 实现了 routune 的出站代理适配器
 package outbound
 
 import (
@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/eyslce/clash/component/dialer"
-	C "github.com/eyslce/clash/constant"
-	"github.com/eyslce/clash/transport/gun"
-	"github.com/eyslce/clash/transport/trojan"
+	"github.com/eyslce/routune/component/dialer"
+	C "github.com/eyslce/routune/constant"
+	"github.com/eyslce/routune/transport/gun"
+	"github.com/eyslce/routune/transport/trojan"
 
 	"golang.org/x/net/http2"
 )

@@ -1,9 +1,9 @@
 package hub
 
 import (
-	"github.com/eyslce/clash/config"
-	"github.com/eyslce/clash/hub/executor"
-	"github.com/eyslce/clash/hub/route"
+	"github.com/eyslce/routune/config"
+	"github.com/eyslce/routune/hub/executor"
+	"github.com/eyslce/routune/hub/route"
 )
 
 type Option func(*config.Config)
@@ -26,8 +26,8 @@ func WithSecret(secret string) Option {
 	}
 }
 
-// Parse call at the beginning of clash
-// Parse 函数在 clash 启动时调用，用于解析配置并应用。
+// Parse call at the beginning of routune
+// Parse 函数在 routune 启动时调用，用于解析配置并应用。
 // 它接收一系列 Option 函数作为参数，这些函数可以修改加载的配置。
 func Parse(options ...Option) error {
 	// 首先，尝试解析配置文件。

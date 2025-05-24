@@ -6,7 +6,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/eyslce/clash/component/dialer"
+	"github.com/eyslce/routune/component/dialer"
 )
 
 // AdapterType 定义了不同代理适配器的类型。
